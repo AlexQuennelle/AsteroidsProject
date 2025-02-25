@@ -7,7 +7,7 @@ class Actor {
     /**
      * List of colliders that make up the actor's shape for the physics system
      * @type {Collider[]}
-     * @private
+     * @public
      */
     this.colliders = [];
     /**
@@ -26,7 +26,17 @@ class Actor {
    * @public
    */
   CheckCollisions(actors) {
+    // TODO: Implement
     let overlapped = false;
-    actors.forEach((element) => {});
+    actors.forEach((element) => { });
+  }
+
+  /**
+   * Adjusts the positions and rotations of the actor's colliders.
+   * @returns {Collider[]}
+   */
+  GetColliders() {
+    // TODO: Adjust collider rotation and positions
+    return this.colliders;
   }
 }

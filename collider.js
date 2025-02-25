@@ -33,18 +33,77 @@ class Collider {
    * @public
    */
   CheckCollision(pos, angle, actor) {
-  }
+    let col = false;
+    let adjustedVerts = [];
+    let adjustedNormals = [];
+    let colliders = actor.GetColliders();
 
+    this.verts.forEach((vert) => {
+      adjustedVerts.push(p5.Vector.rotate(vert, angle).add(pos));
+    });
+    this.normals.forEach((nor) => {
+      adjustedNormals.push(p5.Vector.rotate(nor, angle));
+    });
+    colliders.forEach((collider) => {
+      col |= Collider.CheckCollider(adjustedVerts, adjustedNormals, collider);
+    });
+  }
 
   /******************************************/
   /*             Static Methods             */
   /******************************************/
 
   /**
+   * Checks if
+   * @param {vec2[]} verts The vertices of the current collider
+   * @param {vec2[]} normals The normals of the current collider
+   * @param {Collider} collider the collider to check against
+   * @returns {boolean}
+   * @private
+   */
+  static CheckCollider(verts, normals, collider) {
+    let col = true;
+    let allNors = normals.concat(collider.normals);
+    allNors.forEach((nor) => {
+      col &= this.CheckAxis(verts, collider.verts, nor);
+    });
+    return col;
+  }
+
+  /**
+   * Checks if 2 convex shapes defined by lists of vertices overlap along a given axis.
+   * @param {vec2[]} verts List of vertices that make up the first shape
+   * @param {vec2[]} otherVerts List of vertices that make up the second shape
+   * @param {vec2} axis The axis along which to test overlapping
+   * @returns {boolean}
+   * @private
+   */
+  static CheckAxis(verts, otherVerts, axis) {
+    let min1 = Number.MAX_VALUE;
+    let min2 = Number.MAX_VALUE;
+
+    let max1 = Number.NEGATIVE_INFINITY;
+    let max2 = Number.NEGATIVE_INFINITY;
+
+    verts.forEach((vert) => {
+      let proj = p5.Vector.dot(vert, axis);
+      min1 = min1 > proj ? proj : min1;
+      max1 = max1 < proj ? proj : max1;
+    });
+    otherVerts.forEach((vert) => {
+      let proj = p5.Vector.dot(vert, axis);
+      min2 = min2 > proj ? proj : min2;
+      max2 = max2 < proj ? proj : max2;
+    });
+    return !(min1 < max2 && min1 >= min2) || (min2 < max1 && min2 >= min1);
+  }
+
+  /**
    * Gets the distance of the furthest point from the center in an array of colliders
    * Used in culling the number of full collision checks
    * @param {Collider[]} colliders List of colliders to check
    * @returns {number}
+   * @public
    */
   static GetRadius(colliders) {
     let r = 0;
