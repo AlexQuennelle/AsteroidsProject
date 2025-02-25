@@ -9,6 +9,7 @@
  */
 class Collider {
   constructor() {
+    // TODO: Add constructor parameters
     /**
      * List of vertices that make up a convex collider
      * @type {vec2[]}
