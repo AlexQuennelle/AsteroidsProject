@@ -8,21 +8,23 @@
  * @class
  */
 class Collider {
-  constructor() {
-    // TODO: Add constructor parameters
+  /**
+   * @param {vec2} vertices The vertices that make up the collider's shape.
+   */
+  constructor(vertices, normals = Collider.CalculateNormals(vertices)) {
     /**
      * List of vertices that make up a convex collider
      * @type {vec2[]}
      * @private
      */
-    this.verts = [];
+    this.verts = vertices;
     /**
      * List of normals.
      * Derived from a list of vertices.
      * @type {vec2[]}
      * @private
      */
-    this.normals = [];
+    this.normals = normals;
   }
 
   /**
@@ -35,7 +37,9 @@ class Collider {
    */
   CheckCollision(pos, angle, actor) {
     let col = false;
+    /**@type {vec2[]} */
     let adjustedVerts = [];
+    /**@type {vec2[]} */
     let adjustedNormals = [];
     let colliders = actor.GetColliders();
 
@@ -117,5 +121,32 @@ class Collider {
       }
     }
     return r;
+  }
+
+  /**
+   * Calculates a list of normals from an array of vertices.
+   * Assumes clockwise winding order.
+   * @param {vec2[]} verts List of vertieces to caculate normal vectors from.
+   * @returns {vec2[]}
+   * @private
+   */
+  static CalculateNormals(verts) {
+    /**@type {vec2[]} */
+    let normals = [];
+    for (let i = 0; i < verts.length; i++) {
+      /**@type {vec2} */
+      let nor = p5.Vector.sub(verts[i], verts[(i + 1) % verts.length]);
+      nor = createVector(-nor.y, nor.x).normalize();
+      if (
+        normals.some((element) => {
+          (element.x !== nor.x && element.y !== nor.y) ||
+            (-element.x !== nor.x && -element.y !== nor.y);
+        }) ||
+        normals.length === 0
+      ) {
+        normals.push(nor);
+      }
+    }
+    return normals;
   }
 }

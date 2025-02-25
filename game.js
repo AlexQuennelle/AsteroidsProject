@@ -1,8 +1,8 @@
 /**
  * A 2 dimensional vector.
  * @typedef {Vector} vec2
- * @property {number} x
- * @property {number} y
+ * @property {number} x X component
+ * @property {number} y Y component
  */
 
 /**
