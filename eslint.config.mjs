@@ -445,7 +445,7 @@ export default [
     rules: {
       indent: ["warn", 2],
       semi: ["warn", "always"],
-      "no-extra-parens": ["warn", "all"],
+      //"no-extra-parens": ["warn", "all"],
       curly: ["warn", "all"],
       eqeqeq: ["warn", "always"],
       "no-floating-decimal": ["warn"],
