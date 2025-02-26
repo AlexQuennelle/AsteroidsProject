@@ -133,19 +133,13 @@ class Collider {
   static CalculateNormals(verts) {
     /**@type {vec2[]} */
     let normals = [];
+    print(" ");
     for (let i = 0; i < verts.length; i++) {
       /**@type {vec2} */
       let nor = p5.Vector.sub(verts[i], verts[(i + 1) % verts.length]);
       nor = createVector(-nor.y, nor.x).normalize();
-      if (
-        normals.some((element) => {
-          (element.x !== nor.x && element.y !== nor.y) ||
-            (-element.x !== nor.x && -element.y !== nor.y);
-        }) ||
-        normals.length === 0
-      ) {
-        normals.push(nor);
-      }
+      let dupe = false;
+      print(normals);
     }
     return normals;
   }

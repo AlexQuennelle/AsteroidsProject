@@ -5,9 +5,10 @@
 class Actor {
   /**
    * @param {vec2} pos The initial position of the actor
+   * @param {vec2} verts The vertices that make up the actor's shape
    * @param {Collider[]} cols A list of colliders that make up the actor's collision shape
    */
-  constructor(pos, cols) {
+  constructor(pos, verts, cols) {
     /**
      * The actor's current position in 2D space
      * @type {vec2}
@@ -44,6 +45,7 @@ class Actor {
      * @public
      */
     this.radius = Collider.GetRadius(cols);
+    this.points = verts;
   }
 
   Update() {
@@ -56,7 +58,20 @@ class Actor {
    * @returns {void}
    * @public
    */
-  Draw() { }
+  Draw() {
+    push();
+    noStroke();
+    beginShape(TRIANGLE_FAN);
+    this.points.forEach((point) => {
+      let adjustedVert = p5.Vector.rotate(point, this.rotation);
+      vertex(
+        adjustedVert.x + this.position.x,
+        adjustedVert.y + this.position.y,
+      );
+    });
+    endShape(CLOSE);
+    pop();
+  }
 
   /**
    * Checks collisions against other actors.
@@ -80,6 +95,9 @@ class Actor {
         }
       }
     }
+    if (col) {
+      print("hit " + this);
+    }
     return col;
   }
 
@@ -90,9 +108,14 @@ class Actor {
   GetColliders() {
     /**@type {Collider[]} */
     let colliders = [];
-    this.colliders.forEach((_col) => {
-      // TODO: Add collider adjustment
-      colliders.push(new Collider());
+    this.colliders.forEach((col) => {
+      let newVerts = [];
+      for (let i = 0; i < col.verts.length; i++) {
+        newVerts.push(
+          p5.Vector.rotate(col.verts[i], this.rotation).add(this.position),
+        );
+      }
+      colliders.push(new Collider(col.verts, col.normals));
     });
     return colliders;
   }

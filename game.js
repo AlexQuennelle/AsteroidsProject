@@ -20,7 +20,27 @@ class Game {
      */
     this.state = 0;
     /**@type {Actor[]} */
-    this.actors = [];
+    this.actors = [
+      new Actor(
+        createVector(width / 2, height / 3),
+        [
+          createVector(-10, -10),
+          createVector(10, -10),
+          createVector(10, 10),
+          createVector(-10, 10),
+        ],
+        [
+          new Collider([
+            createVector(-10, -10),
+            createVector(10, -10),
+            createVector(10, 10),
+            createVector(-10, 10),
+          ]),
+        ],
+      ),
+    ];
+    //this.actors = [];
+    this.SpawnPlayer();
   }
   SpawnPlayer() {
     this.player = new PlayerShip(createVector(width / 2, height / 2));
@@ -43,6 +63,9 @@ class Game {
    * @private
    */
   UpdatePysics() {
+    if (this.player) {
+      this.player.CheckCollisions([this.actors[0]]);
+    }
     this.actors.forEach((actor) => {
       actor.Update();
     });

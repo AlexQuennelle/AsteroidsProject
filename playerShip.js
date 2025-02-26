@@ -17,8 +17,7 @@ class PlayerShip extends Actor {
       new Collider([verts[0], verts[2], verts[3]]),
     ];
     //call base constructor
-    super(pos, cols);
-    this.points = verts;
+    super(pos, verts, cols);
   }
   Update() {
     this.HandleInput();
@@ -46,20 +45,5 @@ class PlayerShip extends Actor {
     if (keyIsDown(68)) {
       this.angularVelocity += rotationSpeed * deltaTime;
     }
-  }
-
-  Draw() {
-    push();
-    noStroke();
-    beginShape(TRIANGLE_FAN);
-    this.points.forEach((point) => {
-      let adjustedVert = p5.Vector.rotate(point, this.rotation);
-      vertex(
-        adjustedVert.x + this.position.x,
-        adjustedVert.y + this.position.y,
-      );
-    });
-    endShape(CLOSE);
-    pop();
   }
 }
