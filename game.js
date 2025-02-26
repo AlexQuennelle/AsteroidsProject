@@ -19,5 +19,43 @@ class Game {
      * @private
      */
     this.state = 0;
+    /**@type {Actor[]} */
+    this.actors = [];
+  }
+  SpawnPlayer() {
+    this.player = new PlayerShip(createVector(width / 2, height / 2));
+    this.actors.push(this.player);
+  }
+
+  /**
+   * The game instance's main update loop.
+   * @returns {void}
+   * @public
+   */
+  Update() {
+    this.UpdatePysics();
+    this.Draw();
+  }
+
+  /**
+   * perfoms physics updates for all actors and particles.
+   * @returns {void}
+   * @private
+   */
+  UpdatePysics() {
+    this.actors.forEach((actor) => {
+      actor.Update();
+    });
+  }
+
+  /**
+   * Draws the game to the screen
+   * @returns {void}
+   * @private
+   */
+  Draw() {
+    this.actors.forEach((actor) => {
+      actor.Draw();
+    });
   }
 }

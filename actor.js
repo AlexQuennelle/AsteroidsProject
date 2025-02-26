@@ -27,6 +27,12 @@ class Actor {
      */
     this.velocity = createVector(0, 0);
     /**
+     * The speed at which the object is rotating
+     * @type {number}
+     * @private
+     */
+    this.angularVelocity = 0;
+    /**
      * List of colliders that make up the actor's shape for the physics system
      * @type {Collider[]}
      * @public
@@ -37,8 +43,21 @@ class Actor {
      * @type {number}
      * @public
      */
-    this.radius = Collider.GetRadius(colliders);
+    this.radius = Collider.GetRadius(cols);
   }
+
+  Update() {
+    this.position = p5.Vector.add(this.position, this.velocity);
+    this.rotation += this.angularVelocity;
+  }
+
+  /**
+   * Draws the actor
+   * @returns {void}
+   * @public
+   */
+  Draw() { }
+
   /**
    * Checks collisions against other actors.
    * Returns true if any of the current actor's colliders overlap

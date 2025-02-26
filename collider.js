@@ -9,7 +9,7 @@
  */
 class Collider {
   /**
-   * @param {vec2} vertices The vertices that make up the collider's shape.
+   * @param {vec2[]} vertices The vertices that make up the collider's shape.
    */
   constructor(vertices, normals = Collider.CalculateNormals(vertices)) {
     /**
