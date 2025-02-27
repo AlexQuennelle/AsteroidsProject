@@ -12,7 +12,8 @@
  */
 class Game {
   constructor() {
-    /** The high level state of the game
+    /**
+     * The high level state of the game
      * 0 = title screen
      * 1 = gameplay
      * @type {number}
@@ -41,6 +42,7 @@ class Game {
     ];
     //this.actors = [];
     this.SpawnPlayer();
+    this.actors.push(new Asteroid(createVector(500, 500)));
   }
   SpawnPlayer() {
     this.player = new PlayerShip(createVector(width / 2, height / 2));
@@ -64,7 +66,10 @@ class Game {
    */
   UpdatePysics() {
     if (this.player) {
-      this.player.CheckCollisions([this.actors[0]]);
+      this.player.CheckCollisions(
+        this.actors.toSpliced(this.actors.indexOf(this.player), 1),
+        
+      );
     }
     this.actors.forEach((actor) => {
       actor.Update();

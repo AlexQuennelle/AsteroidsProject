@@ -18,6 +18,21 @@ class PlayerShip extends Actor {
     ];
     //call base constructor
     super(pos, verts, cols);
+    /**
+     * The player's current score.
+     * @type {number}
+     */
+    this.score = 0;
+    /**
+     * The number of lives the player has remaining
+     * @type {number}
+     */
+    this.lives = 0;
+    /**
+     * The number of frames left in the player's invincibilty
+     * @type {number}
+     */
+    this.iFrames = 0;
   }
   Update() {
     this.HandleInput();

@@ -5,7 +5,7 @@
 class Actor {
   /**
    * @param {vec2} pos The initial position of the actor
-   * @param {vec2} verts The vertices that make up the actor's shape
+   * @param {vec2[]} verts The vertices that make up the actor's shape
    * @param {Collider[]} cols A list of colliders that make up the actor's collision shape
    */
   constructor(pos, verts, cols) {
