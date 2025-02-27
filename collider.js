@@ -41,6 +41,7 @@ class Collider {
     let adjustedVerts = [];
     /**@type {vec2[]} */
     let adjustedNormals = [];
+    /**@type {Collider[]} */
     let colliders = actor.GetColliders();
 
     this.verts.forEach((vert) => {
@@ -52,6 +53,7 @@ class Collider {
     colliders.forEach((collider) => {
       col |= Collider.CheckCollider(adjustedVerts, adjustedNormals, collider);
     });
+    return col;
   }
 
   /******************************************/
@@ -100,7 +102,7 @@ class Collider {
       min2 = min2 > proj ? proj : min2;
       max2 = max2 < proj ? proj : max2;
     });
-    return !(min1 < max2 && min1 >= min2) || (min2 < max1 && min2 >= min1);
+    return (min1 < max2 && min1 >= min2) || (min2 < max1 && min2 >= min1);
   }
 
   /**
@@ -133,13 +135,23 @@ class Collider {
   static CalculateNormals(verts) {
     /**@type {vec2[]} */
     let normals = [];
-    print(" ");
     for (let i = 0; i < verts.length; i++) {
       /**@type {vec2} */
       let nor = p5.Vector.sub(verts[i], verts[(i + 1) % verts.length]);
       nor = createVector(-nor.y, nor.x).normalize();
-      let dupe = false;
-      print(normals);
+      if (normals.length < 1) {
+        normals.push(nor);
+      } else {
+        let dupe = false;
+        for (let i = 0; i < normals.length; i++) {
+          dupe |=
+            (nor.x === normals[i].x && nor.y === normals[i].y) ||
+            (-nor.x === normals[i].x && -nor.y === normals[i].y);
+        }
+        if (!dupe) {
+          normals.push(nor);
+        }
+      }
     }
     return normals;
   }

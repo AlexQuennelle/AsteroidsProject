@@ -115,7 +115,7 @@ class Actor {
           p5.Vector.rotate(col.verts[i], this.rotation).add(this.position),
         );
       }
-      colliders.push(new Collider(col.verts, col.normals));
+      colliders.push(new Collider(newVerts, col.normals));
     });
     return colliders;
   }
