@@ -22,11 +22,16 @@ class PlayerShip extends Actor {
   Update() {
     this.HandleInput();
     super.Update();
+    this.velocity = p5.Vector.mult(
+      this.velocity,
+      0.9
+    );
+    this.angularVelocity *= 1 / (abs(this.angularVelocity) + 1);
   }
 
   HandleInput() {
-    const rotationSpeed = 0.005;
-    const acceleration = createVector(0, -0.01 * deltaTime);
+    const rotationSpeed = 0.1;
+    const acceleration = createVector(0, -0.02 * deltaTime);
     // W
     if (keyIsDown(87)) {
       this.velocity = p5.Vector.add(
