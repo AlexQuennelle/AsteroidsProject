@@ -12,6 +12,7 @@
  */
 class Game {
   constructor() {
+    this.resolution = createVector(800, 600);
     /**
      * The high level state of the game
      * 0 = title screen
@@ -21,31 +22,14 @@ class Game {
      */
     this.state = 0;
     /**@type {Actor[]} */
-    this.actors = [
-      new Actor(
-        createVector(width / 2, height / 3),
-        [
-          createVector(-10, -10),
-          createVector(10, -10),
-          createVector(10, 10),
-          createVector(-10, 10),
-        ],
-        [
-          new Collider([
-            createVector(-10, -10),
-            createVector(10, -10),
-            createVector(10, 10),
-            createVector(-10, 10),
-          ]),
-        ],
-      ),
-    ];
-    //this.actors = [];
+    this.actors = [];
     this.SpawnPlayer();
-    this.actors.push(new Asteroid(createVector(500, 500)));
+    this.actors.push(new Asteroid(createVector(200, 100), 1));
   }
   SpawnPlayer() {
-    this.player = new PlayerShip(createVector(width / 2, height / 2));
+    this.player = new PlayerShip(
+      createVector(this.resolution.x / 2, this.resolution.y / 2),
+    );
     this.actors.push(this.player);
   }
 
@@ -68,7 +52,6 @@ class Game {
     if (this.player) {
       this.player.CheckCollisions(
         this.actors.toSpliced(this.actors.indexOf(this.player), 1),
-        
       );
     }
     this.actors.forEach((actor) => {
@@ -82,6 +65,10 @@ class Game {
    * @private
    */
   Draw() {
+    push();
+    fill(5);
+    rect(0, 0, this.resolution.x, this.resolution.y);
+    pop();
     this.actors.forEach((actor) => {
       actor.Draw();
     });
