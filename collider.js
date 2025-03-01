@@ -70,9 +70,29 @@ class Collider {
    */
   static CheckCollider(verts, normals, collider) {
     let col = true;
-    let allNors = normals.concat(collider.normals);
+    let allNors = [];
+    if (collider instanceof CircleCollider) {
+      allNors = normals;
+    } else {
+      allNors = normals.concat(collider.normals);
+    }
     allNors.forEach((nor) => {
-      col &= this.CheckAxis(verts, collider.verts, nor);
+      let otherVerts = [];
+      if (collider instanceof CircleCollider) {
+        otherVerts = [
+          p5.Vector.add(
+            collider.position,
+            p5.Vector.mult(nor, collider.radius),
+          ),
+          p5.Vector.add(
+            collider.position,
+            p5.Vector.mult(nor, -collider.radius),
+          ),
+        ];
+      } else {
+        otherVerts = collider.verts;
+      }
+      col &= this.CheckAxis(verts, otherVerts, nor);
     });
     return col;
   }
@@ -115,6 +135,12 @@ class Collider {
   static GetRadius(colliders) {
     let r = 0;
     for (let c = 0; c < colliders.length; c++) {
+      if (colliders[c] instanceof CircleCollider) {
+        let dist = p5.Vector.mag(colliders[c].position) + colliders[c].radius;
+        if (dist > r) {
+          r = dist;
+        }
+      }
       for (let v = 0; v < colliders[c].verts.length; v++) {
         let dist = p5.Vector.mag(colliders[c].verts[v]);
         if (dist > r) {

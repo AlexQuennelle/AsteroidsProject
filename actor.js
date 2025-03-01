@@ -96,7 +96,8 @@ class Actor {
       }
     }
     if (col) {
-      print("hit " + this);
+      print("hit");
+      print(this);
     }
     return col;
   }
@@ -109,13 +110,22 @@ class Actor {
     /**@type {Collider[]} */
     let colliders = [];
     this.colliders.forEach((col) => {
-      let newVerts = [];
-      for (let i = 0; i < col.verts.length; i++) {
-        newVerts.push(
-          p5.Vector.rotate(col.verts[i], this.rotation).add(this.position),
+      if (col instanceof CircleCollider) {
+        colliders.push(
+          new CircleCollider(
+            p5.Vector.rotate(col.position, this.rotation).add(this.position),
+            col.radius,
+          ),
         );
+      } else {
+        let newVerts = [];
+        for (let i = 0; i < col.verts.length; i++) {
+          newVerts.push(
+            p5.Vector.rotate(col.verts[i], this.rotation).add(this.position),
+          );
+        }
+        colliders.push(new Collider(newVerts, col.normals));
       }
-      colliders.push(new Collider(newVerts, col.normals));
     });
     return colliders;
   }
