@@ -44,13 +44,16 @@ class Actor {
      * @type {number}
      * @public
      */
-    this.radius = Collider.GetRadius(cols);
+    this.collisionRadius = Collider.GetRadius(cols);
     this.points = verts;
+    this.hit = false;
+    this.isDead = false;
   }
 
   Update() {
     this.position = p5.Vector.add(this.position, this.velocity);
     this.rotation += this.angularVelocity;
+    this.isDead = this.hit;
   }
 
   /**
@@ -74,6 +77,15 @@ class Actor {
   }
 
   /**
+   * Handles dying logic on an actor
+   */
+  Die() {
+    // TODO: Implement particle spawning etc.
+    print(this);
+    print("died");
+  }
+
+  /**
    * Checks collisions against other actors.
    * Returns true if any of the current actor's colliders overlap
    * any other collider
@@ -94,10 +106,6 @@ class Actor {
           break;
         }
       }
-    }
-    if (col) {
-      print("hit");
-      print(this);
     }
     return col;
   }

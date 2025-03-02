@@ -24,7 +24,7 @@ class Game {
     /**@type {Actor[]} */
     this.actors = [];
     this.SpawnPlayer();
-    this.actors.push(new Asteroid(createVector(200, 100), 1));
+    this.actors.push(new Asteroid(createVector(200, 100), 2));
   }
   SpawnPlayer() {
     this.player = new PlayerShip(
@@ -49,11 +49,25 @@ class Game {
    * @private
    */
   UpdatePysics() {
-    if (this.player) {
-      this.player.CheckCollisions(
-        this.actors.toSpliced(this.actors.indexOf(this.player), 1),
+    //filter out dead actors
+    let newActors = [];
+    this.actors.forEach((actor) => {
+      if (!actor.isDead || actor instanceof PlayerShip) {
+        newActors.push(actor);
+      } 
+      if (actor.isDead) {
+        actor.Die();
+      }
+    });
+    this.actors = newActors;
+
+    this.actors.forEach((actor) => {
+      let hit = actor.CheckCollisions(
+        this.actors.toSpliced(this.actors.indexOf(actor), 1),
       );
-    }
+      actor.hit = hit;
+    });
+
     this.actors.forEach((actor) => {
       actor.Update();
     });

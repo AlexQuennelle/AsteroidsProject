@@ -1,7 +1,6 @@
 class Asteroid extends Actor {
   constructor(pos, size) {
-    //let shape = round(random(0, 2));
-    let shape = 2;
+    let shape = round(random(0, 2));
     super(
       pos,
       Asteroid.GetShape(shape, size),
@@ -96,51 +95,51 @@ class Asteroid extends Actor {
       case 1:
         colliders = [
           new Collider([
-            createVector(0, -15),
-            createVector(10, -20),
-            createVector(20, -10),
-            createVector(10, -5),
+            createVector(0 * size, -15 * size),
+            createVector(10 * size, -20 * size),
+            createVector(20 * size, -10 * size),
+            createVector(10 * size, -5 * size),
           ]),
           new Collider([
-            createVector(0, -15),
-            createVector(20, 5),
-            createVector(10, 20),
-            createVector(-5, 15),
-            createVector(-15, 0),
-            createVector(-20, -10),
-            createVector(-10, -20),
+            createVector(0 * size, -15 * size),
+            createVector(20 * size, 5 * size),
+            createVector(10 * size, 20 * size),
+            createVector(-5 * size, 15 * size),
+            createVector(-15 * size, 0 * size),
+            createVector(-20 * size, -10 * size),
+            createVector(-10 * size, -20 * size),
           ]),
           new Collider([
-            createVector(-5, 15),
-            createVector(-10, 20),
-            createVector(-20, 10),
-            createVector(-15, 0),
+            createVector(-5 * size, 15 * size),
+            createVector(-10 * size, 20 * size),
+            createVector(-20 * size, 10 * size),
+            createVector(-15 * size, 0 * size),
           ]),
         ];
         break;
       case 2:
         colliders = [
           new Collider([
-            createVector(5, -20),
-            createVector(20, -10),
-            createVector(20, -5),
-            createVector(5, 0),
-            createVector(-5, -10),
-            createVector(-10, -20),
+            createVector(5 * size, -20 * size),
+            createVector(20 * size, -10 * size),
+            createVector(20 * size, -5 * size),
+            createVector(5 * size, 0 * size),
+            createVector(-5 * size, -10 * size),
+            createVector(-10 * size, -20 * size),
           ]),
           new Collider([
-            createVector(5, 0),
-            createVector(20, 10),
-            createVector(10, 20),
-            createVector(5, 15),
+            createVector(5 * size, 0 * size),
+            createVector(20 * size, 10 * size),
+            createVector(10 * size, 20 * size),
+            createVector(5 * size, 15 * size),
           ]),
           new Collider([
-            createVector(5, 0),
-            createVector(5, 15),
-            createVector(-10, 20),
-            createVector(-20, 5),
-            createVector(-20, -10),
-            createVector(-5, -10),
+            createVector(5 * size, 0 * size),
+            createVector(5 * size, 15 * size),
+            createVector(-10 * size, 20 * size),
+            createVector(-20 * size, 5 * size),
+            createVector(-20 * size, -10 * size),
+            createVector(-5 * size, -10 * size),
           ]),
         ];
         break;

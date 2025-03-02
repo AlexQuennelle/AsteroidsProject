@@ -20,8 +20,9 @@ class CircleCollider extends Collider {
     let colliders = actor.GetColliders();
 
     colliders.forEach((collider) => {
-      col |= CircleCollider.CheckCollider(adjustedPos, radius, collider);
+      col |= CircleCollider.CheckCollider(adjustedPos, this.radius, collider);
     });
+    return col;
   }
 
   /******************************************/

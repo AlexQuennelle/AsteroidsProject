@@ -33,15 +33,16 @@ class PlayerShip extends Actor {
      * @type {number}
      */
     this.iFrames = 0;
+    this.shootCooldown = 0;
   }
   Update() {
+    this.shootCooldown = this.shootCooldown > 0 ? this.shootCooldown - 1 : 0;
+    this.iFrames = this.iFrames > 0 ? this.iFrames - 1 : 0;
     this.HandleInput();
     super.Update();
-    this.velocity = p5.Vector.mult(
-      this.velocity,
-      0.9
-    );
+    this.velocity = p5.Vector.mult(this.velocity, 0.9);
     this.angularVelocity *= 1 / (abs(this.angularVelocity) + 1);
+    this.isDead = this.hit;
   }
 
   HandleInput() {
@@ -65,5 +66,61 @@ class PlayerShip extends Actor {
     if (keyIsDown(68)) {
       this.angularVelocity += rotationSpeed * deltaTime;
     }
+    // Space
+    if (keyIsDown(32)) {
+      if (this.shootCooldown <= 0) {
+        this.shootCooldown = 20;
+        this.Shoot();
+      }
+    }
+  }
+
+  /**
+   * Shoots a projectile
+   */
+  Shoot() {
+    let bullet = new Bullet(
+      p5.Vector.add(this.position, createVector(0, -20).rotate(this.rotation)),
+      true,
+    );
+    bullet.velocity = createVector(0, -10).rotate(this.rotation);
+    this.velocity = p5.Vector.add(this.velocity, createVector(0,2).rotate(this.rotation));
+    bullet.rotation = this.rotation;
+    gameInstance.actors.push(bullet);
+  }
+
+  /**
+   * @param {Actor[]} actors list of actors to check collision against
+   * @returns {boolean}
+   * @public
+   */
+  CheckCollisions(actors) {
+    let newActors = [];
+    actors.forEach((actor) => {
+      if (
+        !(actor instanceof Bullet) ||
+        (actor instanceof Bullet && !actor.isPlayerBullet)
+      ) {
+        newActors.push(actor);
+      }
+    });
+    return super.CheckCollisions(newActors);
+    //let col = false;
+    //for (let i = 0; i < actors.length; i++) {
+    //  if (actors[i] instanceof Bullet && actors[i].isPlayerBullet) {
+    //    continue;
+    //  }
+    //  for (let j = 0; j < this.colliders.length; j++) {
+    //    col |= this.colliders[j].CheckCollision(
+    //      this.position,
+    //      this.rotation,
+    //      actors[i],
+    //    );
+    //    if (col) {
+    //      break;
+    //    }
+    //  }
+    //}
+    //return col;
   }
 }
