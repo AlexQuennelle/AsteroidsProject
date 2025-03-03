@@ -51,6 +51,12 @@ class Actor {
   }
 
   Update() {
+    if (this.velocity.mag() <= 0.001) {
+      this.velocity = createVector(0, 0);
+    }
+    if (abs(this.angularVelocity) <= 0.001) {
+      this.angularVelocity = 0;
+    }
     this.position = p5.Vector.add(this.position, this.velocity);
     this.rotation += this.angularVelocity;
     this.isDead = this.hit;

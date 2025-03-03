@@ -48,9 +48,6 @@ class PlayerShip extends Actor {
       this.angularVelocity *= 1 / (abs(this.angularVelocity) + 1);
       this.isDead = this.hit;
     }
-    if (this.respawnTime === 0) {
-      this.iFrames = 10;
-    }
   }
 
   Die() {
@@ -63,6 +60,7 @@ class PlayerShip extends Actor {
     this.hit = false;
     this.isDead = false;
     this.respawnTime = 30;
+    this.iFrames = 60;
     this.lives--;
 
     this.position = createVector(
@@ -71,6 +69,7 @@ class PlayerShip extends Actor {
     );
     this.velocity = createVector(0, 0);
     this.rotation = 0;
+    this.angularVelocity = 0;
   }
 
   Draw() {
@@ -132,7 +131,6 @@ class PlayerShip extends Actor {
    * @public
    */
   CheckCollisions(actors) {
-    print(this.iFrames);
     if (this.iFrames > 0) {
       return false;
     }

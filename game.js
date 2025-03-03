@@ -56,7 +56,6 @@ class Game {
         newActors.push(actor);
       } 
       if (actor.isDead) {
-        print(actor);
         actor.Die();
       }
     });
