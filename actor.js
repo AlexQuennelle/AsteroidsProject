@@ -140,6 +140,7 @@ class Actor {
           actors[i],
         );
         if (col) {
+          actors[i].hit ||= true;
           break;
         }
       }
