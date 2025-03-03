@@ -54,6 +54,11 @@ class Actor {
     this.position = p5.Vector.add(this.position, this.velocity);
     this.rotation += this.angularVelocity;
     this.isDead = this.hit;
+
+    this.position = createVector(
+      (this.position.x + gameInstance.resolution.x) % gameInstance.resolution.x,
+      (this.position.y + gameInstance.resolution.y) % gameInstance.resolution.y,
+    );
   }
 
   /**
@@ -81,8 +86,6 @@ class Actor {
    */
   Die() {
     // TODO: Implement particle spawning etc.
-    print(this);
-    print("died");
   }
 
   /**
@@ -97,7 +100,7 @@ class Actor {
     let col = false;
     for (let i = 0; i < actors.length; i++) {
       for (let j = 0; j < this.colliders.length; j++) {
-        col |= this.colliders[j].CheckCollision(
+        col ||= this.colliders[j].CheckCollision(
           this.position,
           this.rotation,
           actors[i],

@@ -27,22 +27,56 @@ class PlayerShip extends Actor {
      * The number of lives the player has remaining
      * @type {number}
      */
-    this.lives = 0;
+    this.lives = 3;
     /**
      * The number of frames left in the player's invincibilty
      * @type {number}
      */
     this.iFrames = 0;
     this.shootCooldown = 0;
+    this.respawnTime = 0;
   }
   Update() {
-    this.shootCooldown = this.shootCooldown > 0 ? this.shootCooldown - 1 : 0;
-    this.iFrames = this.iFrames > 0 ? this.iFrames - 1 : 0;
-    this.HandleInput();
-    super.Update();
-    this.velocity = p5.Vector.mult(this.velocity, 0.9);
-    this.angularVelocity *= 1 / (abs(this.angularVelocity) + 1);
-    this.isDead = this.hit;
+    if (this.respawnTime > 0) {
+      this.respawnTime--;
+    } else {
+      this.shootCooldown = this.shootCooldown > 0 ? this.shootCooldown - 1 : 0;
+      this.iFrames = this.iFrames > 0 ? this.iFrames - 1 : 0;
+      this.HandleInput();
+      super.Update();
+      this.velocity = p5.Vector.mult(this.velocity, 0.9);
+      this.angularVelocity *= 1 / (abs(this.angularVelocity) + 1);
+      this.isDead = this.hit;
+    }
+    if (this.respawnTime === 0) {
+      this.iFrames = 10;
+    }
+  }
+
+  Die() {
+    super.Die();
+    if (this.lives < 0) {
+      // TODO: proper game over logic
+      print("GAME OVER!");
+      gameInstance = new Game();
+    }
+    this.hit = false;
+    this.isDead = false;
+    this.respawnTime = 30;
+    this.lives--;
+
+    this.position = createVector(
+      gameInstance.resolution.x / 2,
+      gameInstance.resolution.y / 2,
+    );
+    this.velocity = createVector(0, 0);
+    this.rotation = 0;
+  }
+
+  Draw() {
+    if (this.respawnTime <= 0) {
+      super.Draw();
+    }
   }
 
   HandleInput() {
@@ -84,7 +118,10 @@ class PlayerShip extends Actor {
       true,
     );
     bullet.velocity = createVector(0, -10).rotate(this.rotation);
-    this.velocity = p5.Vector.add(this.velocity, createVector(0,2).rotate(this.rotation));
+    this.velocity = p5.Vector.add(
+      this.velocity,
+      createVector(0, 1.25).rotate(this.rotation),
+    );
     bullet.rotation = this.rotation;
     gameInstance.actors.push(bullet);
   }
@@ -95,6 +132,10 @@ class PlayerShip extends Actor {
    * @public
    */
   CheckCollisions(actors) {
+    print(this.iFrames);
+    if (this.iFrames > 0) {
+      return false;
+    }
     let newActors = [];
     actors.forEach((actor) => {
       if (

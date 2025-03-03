@@ -7,13 +7,13 @@ class Bullet extends Actor {
     super(position, [], [new CircleCollider(createVector(0, 0), 5)]);
     this.isPlayerBullet = isPlayerBullet;
     this.radius = 5;
-    this.lifetime = 60;
+    this.lifetime = 45;
   }
   Update() {
+    super.Update();
     if (this.lifetime <= 0) {
       this.isDead = true;
     }
-    super.Update();
     this.lifetime--;
   }
   Draw() {
@@ -35,6 +35,7 @@ class Bullet extends Actor {
         newActors.push(actor);
       }
     });
-    return super.CheckCollisions(newActors);
+    let col = super.CheckCollisions(newActors);
+    return col;
   }
 }

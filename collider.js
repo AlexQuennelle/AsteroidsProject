@@ -51,7 +51,7 @@ class Collider {
       adjustedNormals.push(p5.Vector.rotate(nor, angle));
     });
     colliders.forEach((collider) => {
-      col |= Collider.CheckCollider(adjustedVerts, adjustedNormals, collider);
+      col ||= Collider.CheckCollider(adjustedVerts, adjustedNormals, collider);
     });
     return col;
   }
@@ -92,7 +92,7 @@ class Collider {
       } else {
         otherVerts = collider.verts;
       }
-      col &= this.CheckAxis(verts, otherVerts, nor);
+      col &&= this.CheckAxis(verts, otherVerts, nor);
     });
     return col;
   }

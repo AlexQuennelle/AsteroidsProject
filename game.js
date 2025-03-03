@@ -56,6 +56,7 @@ class Game {
         newActors.push(actor);
       } 
       if (actor.isDead) {
+        print(actor);
         actor.Die();
       }
     });
@@ -65,7 +66,7 @@ class Game {
       let hit = actor.CheckCollisions(
         this.actors.toSpliced(this.actors.indexOf(actor), 1),
       );
-      actor.hit = hit;
+      actor.hit ||= hit;
     });
 
     this.actors.forEach((actor) => {

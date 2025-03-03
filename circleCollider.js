@@ -20,7 +20,7 @@ class CircleCollider extends Collider {
     let colliders = actor.GetColliders();
 
     colliders.forEach((collider) => {
-      col |= CircleCollider.CheckCollider(adjustedPos, this.radius, collider);
+      col ||= CircleCollider.CheckCollider(adjustedPos, this.radius, collider);
     });
     return col;
   }
@@ -57,7 +57,7 @@ class CircleCollider extends Collider {
       );
     } else {
       collider.normals.forEach((nor) => {
-        col &= Collider.CheckAxis(
+        col &&= Collider.CheckAxis(
           [
             p5.Vector.add(pos, p5.Vector.mult(nor, rad)),
             p5.Vector.add(pos, p5.Vector.mult(nor, -rad)),
