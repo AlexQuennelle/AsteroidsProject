@@ -21,21 +21,33 @@ class PlayerShip extends Actor {
     /**
      * The player's current score.
      * @type {number}
+     * @public
      */
     this.score = 0;
     /**
      * The number of lives the player has remaining
      * @type {number}
+     * @private
      */
     this.lives = 3;
     /**
      * The number of frames left in the player's invincibilty
      * @type {number}
+     * @public
      */
     this.iFrames = 0;
+    /**
+     * The number of frames before the player can shoot again
+     * @type {number}
+     * @private
+     */
     this.shootCooldown = 0;
+    /**
+     * The number of frames before the player regains control after respawning
+     */
     this.respawnTime = 0;
   }
+
   Update() {
     if (this.respawnTime > 0) {
       this.respawnTime--;
@@ -50,6 +62,17 @@ class PlayerShip extends Actor {
     }
   }
 
+  Draw() {
+    if (this.respawnTime <= 0) {
+      super.Draw();
+    }
+  }
+
+  /**
+   * Handles logic related to respawning and decrementing the lives on the player
+   * @returns {void}
+   * @public
+   */
   Die() {
     super.Die();
     if (this.lives < 0) {
@@ -69,15 +92,13 @@ class PlayerShip extends Actor {
     );
     this.velocity = createVector(0, 0);
     this.rotation = 0;
-    this.angularVelocity = 0;
   }
 
-  Draw() {
-    if (this.respawnTime <= 0) {
-      super.Draw();
-    }
-  }
-
+  /**
+   * Handles player input via keyboard
+   * @returns {void}
+   * @private
+   */
   HandleInput() {
     const rotationSpeed = 0.1;
     const acceleration = createVector(0, -0.02 * deltaTime);
@@ -110,6 +131,8 @@ class PlayerShip extends Actor {
 
   /**
    * Shoots a projectile
+   * @returns {void}
+   * @private
    */
   Shoot() {
     let bullet = new Bullet(
@@ -144,22 +167,5 @@ class PlayerShip extends Actor {
       }
     });
     return super.CheckCollisions(newActors);
-    //let col = false;
-    //for (let i = 0; i < actors.length; i++) {
-    //  if (actors[i] instanceof Bullet && actors[i].isPlayerBullet) {
-    //    continue;
-    //  }
-    //  for (let j = 0; j < this.colliders.length; j++) {
-    //    col |= this.colliders[j].CheckCollision(
-    //      this.position,
-    //      this.rotation,
-    //      actors[i],
-    //    );
-    //    if (col) {
-    //      break;
-    //    }
-    //  }
-    //}
-    //return col;
   }
 }

@@ -1,5 +1,10 @@
+/**
+ * Simple collider for circular physics objects
+ */
 class CircleCollider extends Collider {
   constructor(position, radius) {
+    //pass empty lists to the super constructor
+    //because this collider is a circle it doesn't need vertices or normals
     super([], []);
     /**
      * The position of the collider relative to its parent
@@ -12,6 +17,13 @@ class CircleCollider extends Collider {
      */
     this.radius = radius;
   }
+
+  /**
+   * @inheritdoc
+   * @param {vec2} pos The position of the collider's parent actor
+   * @param {number} angle The anlge of the collider's parent actor
+   * @param {Actor} actor The actor to check collision against
+   */
   CheckCollision(pos, angle, actor) {
     let col = false;
     /**@type {vec2} */
@@ -30,6 +42,7 @@ class CircleCollider extends Collider {
   /******************************************/
 
   /**
+   * Check if a given collider overlaps a circle with a given position and radius
    * @param {vec2} pos position of the current collider
    * @param {number} rad radius of the current collider
    * @param {Collider} collider collider to check against

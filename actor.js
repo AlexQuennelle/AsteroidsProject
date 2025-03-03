@@ -18,25 +18,25 @@ class Actor {
     /**
      * The actor's current rotation angle in degrees
      * @type {number}
-     * @private
+     * @protected
      */
     this.rotation = 0;
     /**
      * The actor's current velocity
      * @type {vec2}
-     * @private
+     * @protected
      */
     this.velocity = createVector(0, 0);
     /**
      * The speed at which the object is rotating
      * @type {number}
-     * @private
+     * @protected
      */
     this.angularVelocity = 0;
     /**
      * List of colliders that make up the actor's shape for the physics system
      * @type {Collider[]}
-     * @public
+     * @protected
      */
     this.colliders = cols;
     /**
@@ -45,22 +45,48 @@ class Actor {
      * @public
      */
     this.collisionRadius = Collider.GetRadius(cols);
+    /**
+     * The points that make up the actor
+     * @type {vec2[]}
+     * @protected
+     */
     this.points = verts;
+    /**
+     * Wether the actor collided with another
+     * @type {boolean}
+     * @public
+     */
     this.hit = false;
+    /**
+     * Wether the actor is dead and should be ignored in future update ticks
+     * @type {boolean}
+     * @public
+     */
     this.isDead = false;
   }
 
+  /**
+   * Physics tick update
+   * @returns {void}
+   * @public
+   */
   Update() {
+    //set velocities to 0 if they're below a certain threshold
     if (this.velocity.mag() <= 0.001) {
       this.velocity = createVector(0, 0);
     }
     if (abs(this.angularVelocity) <= 0.001) {
       this.angularVelocity = 0;
     }
+
+    //update the actor's position with it's velocity
     this.position = p5.Vector.add(this.position, this.velocity);
     this.rotation += this.angularVelocity;
+
+    //kill the actor if it has been hit
     this.isDead = this.hit;
 
+    //wrap the actor's position at the edges of the game
     this.position = createVector(
       (this.position.x + gameInstance.resolution.x) % gameInstance.resolution.x,
       (this.position.y + gameInstance.resolution.y) % gameInstance.resolution.y,
@@ -89,6 +115,8 @@ class Actor {
 
   /**
    * Handles dying logic on an actor
+   * @returns {void}
+   * @public
    */
   Die() {
     // TODO: Implement particle spawning etc.
@@ -122,11 +150,13 @@ class Actor {
   /**
    * Adjusts the positions and rotations of the actor's colliders.
    * @returns {Collider[]}
+   * @public
    */
   GetColliders() {
     /**@type {Collider[]} */
     let colliders = [];
     this.colliders.forEach((col) => {
+      //special case for circle colliders
       if (col instanceof CircleCollider) {
         colliders.push(
           new CircleCollider(
@@ -135,6 +165,7 @@ class Actor {
           ),
         );
       } else {
+        /**@type {vec2[]} */
         let newVerts = [];
         for (let i = 0; i < col.verts.length; i++) {
           newVerts.push(

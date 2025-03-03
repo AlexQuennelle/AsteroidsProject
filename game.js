@@ -17,15 +17,26 @@ class Game {
      * The high level state of the game
      * 0 = title screen
      * 1 = gameplay
+     * 2 = game over screen
      * @type {number}
      * @private
      */
     this.state = 0;
-    /**@type {Actor[]} */
+    /**
+     * list of all active actors
+     * @type {Actor[]}
+     */
     this.actors = [];
     this.SpawnPlayer();
     this.actors.push(new Asteroid(createVector(200, 100), 2));
   }
+
+  /**
+   * Creates a new instance of the player character and adds it to the actors array
+   * also keeps a direct reference to the player character
+   * @returns {void}
+   * @private
+   */
   SpawnPlayer() {
     this.player = new PlayerShip(
       createVector(this.resolution.x / 2, this.resolution.y / 2),
@@ -61,6 +72,7 @@ class Game {
     });
     this.actors = newActors;
 
+    //check collision on all actors
     this.actors.forEach((actor) => {
       let hit = actor.CheckCollisions(
         this.actors.toSpliced(this.actors.indexOf(actor), 1),
@@ -68,6 +80,7 @@ class Game {
       actor.hit ||= hit;
     });
 
+    //tick pysics for all actors
     this.actors.forEach((actor) => {
       actor.Update();
     });
@@ -79,10 +92,13 @@ class Game {
    * @private
    */
   Draw() {
+    //draw the background
     push();
     fill(5);
     rect(0, 0, this.resolution.x, this.resolution.y);
     pop();
+
+    //draw all actors
     this.actors.forEach((actor) => {
       actor.Draw();
     });

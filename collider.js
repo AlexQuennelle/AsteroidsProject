@@ -61,7 +61,7 @@ class Collider {
   /******************************************/
 
   /**
-   * Checks if
+   * Checks if 2 given colliders overlap
    * @param {vec2[]} verts The vertices of the current collider
    * @param {vec2[]} normals The normals of the current collider
    * @param {Collider} collider the collider to check against

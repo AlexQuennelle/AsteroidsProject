@@ -1,3 +1,7 @@
+/**
+ * Projectile object that has a limited lifetime of 45 frames
+ * @extends {Actor}
+ */
 class Bullet extends Actor {
   /**
    * @param {vec2} position
@@ -9,6 +13,7 @@ class Bullet extends Actor {
     this.radius = 5;
     this.lifetime = 45;
   }
+
   Update() {
     super.Update();
     if (this.lifetime <= 0) {
@@ -16,6 +21,7 @@ class Bullet extends Actor {
     }
     this.lifetime--;
   }
+
   Draw() {
     push();
     noStroke();
@@ -23,9 +29,14 @@ class Bullet extends Actor {
     pop();
   }
   /**
+   *
+   * Added logic for ignoring the projectile's owner
+   * @inheritdoc {Actor.CheckCollisions}
+   *
    * @param {Actor[]} actors
    */
   CheckCollisions(actors) {
+    /**@type {Actor[]} */
     let newActors = [];
     actors.forEach((actor) => {
       if (
@@ -35,7 +46,6 @@ class Bullet extends Actor {
         newActors.push(actor);
       }
     });
-    let col = super.CheckCollisions(newActors);
-    return col;
+    return super.CheckCollisions(newActors);
   }
 }
