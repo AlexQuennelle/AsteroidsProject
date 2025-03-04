@@ -23,6 +23,14 @@ class Asteroid extends Actor {
     this.size = size;
   }
 
+  CheckCollisions(actors) {
+    super.CheckCollisions(
+      actors.filter((actor) => {
+        !(actor instanceof Asteroid);
+      }),
+    );
+  }
+
   /******************************************/
   /*             Static Methods             */
   /******************************************/

@@ -27,8 +27,37 @@ class Game {
      * @type {Actor[]}
      */
     this.actors = [];
+    this.StartGame();
+  }
+
+  StartGame() {
     this.SpawnPlayer();
     this.actors.push(new Asteroid(createVector(200, 100), 2));
+    this.SpawnAsteroids();
+  }
+
+  /**
+   * Spawns a wave of asteroids
+   * @param {number} [number=random(3,5)] The number of asteroids to spawn
+   * @returns {void}
+   * @private
+   */
+  SpawnAsteroids(number = round(random(3, 5))) {
+    for (let i = 0; i < number; i++) {
+      let p = random();
+      let asteroid = new Asteroid(
+        createVector(
+          p <= this.resolution.x / (this.resolution.x + this.resolution.y)
+            ? p * this.resolution.x
+            : 0,
+          p > this.resolution.x / (this.resolution.x + this.resolution.y)
+            ? p * this.resolution.y
+            : 0,
+        ),
+        3,
+      );
+      this.actors.push(asteroid);
+    }
   }
 
   /**
@@ -65,7 +94,7 @@ class Game {
     this.actors.forEach((actor) => {
       if (!actor.isDead || actor instanceof PlayerShip) {
         newActors.push(actor);
-      } 
+      }
       if (actor.isDead) {
         actor.Die();
       }

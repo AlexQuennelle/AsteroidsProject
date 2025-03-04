@@ -133,14 +133,27 @@ class Actor {
   CheckCollisions(actors) {
     let col = false;
     for (let i = 0; i < actors.length; i++) {
+      if (
+        this.position.dist(actors[i].position) >
+        this.collisionRadius + actors[i].collisionRadius
+      ) {
+        continue;
+      }
+      print(
+        this.position.dist(actors[i].position) +
+        " " +
+        (this.collisionRadius + actors[i].collisionRadius),
+      );
+      let actorCol = false;
       for (let j = 0; j < this.colliders.length; j++) {
-        col ||= this.colliders[j].CheckCollision(
+        actorCol ||= this.colliders[j].CheckCollision(
           this.position,
           this.rotation,
           actors[i],
         );
-        if (col) {
-          actors[i].hit ||= true;
+        if (actorCol) {
+          actors[i].hit = true;
+          col ||= actorCol;
           break;
         }
       }
