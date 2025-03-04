@@ -139,11 +139,6 @@ class Actor {
       ) {
         continue;
       }
-      print(
-        this.position.dist(actors[i].position) +
-        " " +
-        (this.collisionRadius + actors[i].collisionRadius),
-      );
       let actorCol = false;
       for (let j = 0; j < this.colliders.length; j++) {
         actorCol ||= this.colliders[j].CheckCollision(

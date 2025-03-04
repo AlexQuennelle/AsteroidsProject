@@ -10,4 +10,14 @@ function setup() {
 
 function draw() {
   gameInstance.Update();
+  push();
+  noStroke();
+  fill(50);
+  rect(0,0,(width - gameInstance.resolution.x) / 2, height);
+  rect((width / 2 + gameInstance.resolution.x / 2),0,(width - gameInstance.resolution.x) / 2, height);
+  pop();
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }

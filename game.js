@@ -27,12 +27,12 @@ class Game {
      * @type {Actor[]}
      */
     this.actors = [];
+    this.toSpawn = [];
     this.StartGame();
   }
 
   StartGame() {
     this.SpawnPlayer();
-    this.actors.push(new Asteroid(createVector(200, 100), 2));
     this.SpawnAsteroids();
   }
 
@@ -113,6 +113,8 @@ class Game {
     this.actors.forEach((actor) => {
       actor.Update();
     });
+    this.actors = this.actors.concat(this.toSpawn);
+    this.toSpawn = [];
   }
 
   /**
@@ -121,6 +123,8 @@ class Game {
    * @private
    */
   Draw() {
+    push();
+    translate(width/2 - this.resolution.x / 2, height / 2 - this.resolution.y / 2);
     //draw the background
     push();
     fill(5);
@@ -131,5 +135,6 @@ class Game {
     this.actors.forEach((actor) => {
       actor.Draw();
     });
+    pop();
   }
 }
