@@ -146,6 +146,7 @@ class Game {
    * @private
    */
   GameOverScreen() {
+    background(5);
     push();
     textAlign(CENTER, BOTTOM);
     stroke(220);
@@ -232,6 +233,29 @@ class Game {
     this.actors.forEach((actor) => {
       actor.Draw();
     });
+    pop();
+    this.DrawUI();
+  }
+
+  /**
+   * Draws the UI to the screen
+   * @returns {void}
+   * @private
+   */
+  DrawUI() {
+    push();
+    strokeWeight(2.5);
+    stroke(220);
+    fill(150);
+    textAlign(CENTER, TOP);
+    textSize(30);
+    text(`Score: ${this.player.score}`, width / 2, 20);
+    textAlign(LEFT, BOTTOM);
+    text(
+      `Lives: ${this.player.lives}`,
+      width / 2 + this.resolution.x / 2 - 250,
+      height - 20,
+    );
     pop();
   }
 }

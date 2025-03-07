@@ -31,6 +31,12 @@ class PlayerShip extends Actor {
      */
     this.lives = 3;
     /**
+     * The number of points the player has made towards the next bonus life
+     * @type {number}
+     * @private
+     */
+    this.progressToNextLife = 0;
+    /**
      * The number of frames left in the player's invincibilty
      * @type {number}
      * @public
@@ -44,6 +50,8 @@ class PlayerShip extends Actor {
     this.shootCooldown = 0;
     /**
      * The number of frames before the player regains control after respawning
+     * @type {number}
+     * @private
      */
     this.respawnTime = 0;
   }
@@ -63,9 +71,14 @@ class PlayerShip extends Actor {
   }
 
   Draw() {
+    push();
+    if (this.iFrames > 0) {
+      fill(255, 100);
+    }
     if (this.respawnTime <= 0) {
       super.Draw();
     }
+    pop();
   }
 
   /**
@@ -75,7 +88,7 @@ class PlayerShip extends Actor {
    */
   Die() {
     super.Die();
-    if (this.lives < 0) {
+    if (this.lives <= 0) {
       // TODO: proper game over logic
       print("GAME OVER!");
       gameInstance.GameOver();
@@ -146,6 +159,21 @@ class PlayerShip extends Actor {
     );
     bullet.rotation = this.rotation;
     gameInstance.actors.push(bullet);
+  }
+
+  /**
+   * increments the player's score and awards bonus lives every 10 000 points
+   * @param {number} points
+   * @returns {void}
+   * @public
+   */
+  IncrementScore(points) {
+    this.score += points;
+    let previousProgress = this.progressToNextLife;
+    this.progressToNextLife = (this.progressToNextLife + points) % 10000;
+    if (previousProgress > this.progressToNextLife) {
+      this.lives++;
+    }
   }
 
   /**

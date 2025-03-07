@@ -152,16 +152,16 @@ class Actor {
               let points = 0;
               switch (actors[i].size) {
                 case 1:
-                  points = 20;
+                  points = 100;
                   break;
                 case 2:
                   points = 50;
                   break;
                 case 3:
-                  points = 100;
+                  points = 20;
                   break;
               }
-              gameInstance.player.score += points;
+              gameInstance.player.IncrementScore(points);
             }
           }
           actors[i].hit = true;
