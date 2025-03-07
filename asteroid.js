@@ -36,10 +36,10 @@ class Asteroid extends Actor {
   Die() {
     switch (this.size) {
       case 1:
-        gameInstance.player.score += 100;
+        gameInstance.player.score += 20;
         break;
       case 2:
-        gameInstance.player.score += 100;
+        gameInstance.player.score += 50;
         break;
       case 3:
         gameInstance.player.score += 100;
