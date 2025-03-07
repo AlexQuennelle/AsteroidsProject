@@ -107,6 +107,14 @@ class PlayerShip extends Actor {
     this.rotation = 0;
   }
 
+  Teleport() {
+    this.respawnTime = 15;
+    this.position = createVector(
+      random(0, gameInstance.resolution.x),
+      random(0, gameInstance.resolution.y),
+    );
+  }
+
   /**
    * Handles player input via keyboard
    * @returns {void}
@@ -128,6 +136,7 @@ class PlayerShip extends Actor {
     }
     // S
     if (keyIsDown(83)) {
+      this.Teleport();
     }
     // D
     if (keyIsDown(68)) {
