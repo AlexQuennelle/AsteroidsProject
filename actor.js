@@ -147,6 +147,23 @@ class Actor {
           actors[i],
         );
         if (actorCol) {
+          if (this instanceof Bullet) {
+            if (actors[i] instanceof Asteroid) {
+              let points = 0;
+              switch (actors[i].size) {
+                case 1:
+                  points = 20;
+                  break;
+                case 2:
+                  points = 50;
+                  break;
+                case 3:
+                  points = 100;
+                  break;
+              }
+              gameInstance.player.score += points;
+            }
+          }
           actors[i].hit = true;
           col ||= actorCol;
           break;

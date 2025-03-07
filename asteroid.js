@@ -34,17 +34,6 @@ class Asteroid extends Actor {
   }
 
   Die() {
-    switch (this.size) {
-      case 1:
-        gameInstance.player.score += 20;
-        break;
-      case 2:
-        gameInstance.player.score += 50;
-        break;
-      case 3:
-        gameInstance.player.score += 100;
-        break;
-    }
     if (this.size > 0) {
       gameInstance.toSpawn.push(new Asteroid(this.position, this.size - 1));
       gameInstance.toSpawn.push(new Asteroid(this.position, this.size - 1));
