@@ -98,6 +98,8 @@ class Game {
    * @private
    */
   TitleScreen() {
+    let topMargin = (height - this.resolution.y) / 2;
+
     let buttonCol = color(150, 145, 160, 255);
     if (mouseX >= width / 2 - 200 && mouseX <= width / 2 + 200) {
       if (mouseY >= height / 2 - 50 && mouseY <= height / 2 + 50) {
@@ -127,7 +129,7 @@ class Game {
     stroke(220);
     fill(50);
     textSize(80);
-    text("ASTEROIDS", width / 2, height / 3);
+    text("ASTEROIDS", width / 2, topMargin + this.resolution.y / 4);
     pop();
   }
 
@@ -146,6 +148,8 @@ class Game {
    * @private
    */
   GameOverScreen() {
+    let topMargin = (height - this.resolution.y) / 2;
+
     background(5);
     push();
     textAlign(CENTER, BOTTOM);
@@ -153,14 +157,17 @@ class Game {
     strokeWeight(2.5);
     fill("red");
     textSize(80);
-    text("GAME OVER", width / 2, height / 3);
+    text("GAME OVER", width / 2, topMargin + this.resolution.y / 3);
     fill(100);
     textSize(40);
     text(`Score: ${this.player.score}`, width / 2, height / 2);
     pop();
     let buttonCol = color(150, 145, 160, 255);
     if (mouseX >= width / 2 - 200 && mouseX <= width / 2 + 200) {
-      if (mouseY >= (height / 3) * 2 - 50 && mouseY <= (height / 3) * 2 + 50) {
+      if (
+        mouseY >= topMargin + (this.resolution.y / 3) * 2 - 50 &&
+        mouseY <= topMargin + (this.resolution.y / 3) * 2 + 50
+      ) {
         buttonCol = color(165, 160, 185, 255);
         if (mouseIsPressed) {
           gameInstance = new Game();
@@ -170,11 +177,11 @@ class Game {
     push();
     rectMode(CENTER);
     fill(buttonCol);
-    rect(width / 2, (height / 3) * 2, 400, 100);
+    rect(width / 2, topMargin + (this.resolution.y / 3) * 2, 400, 100);
     textAlign(CENTER, CENTER);
     textSize(60);
     fill(0);
-    text("Restart", width / 2, (height / 3) * 2);
+    text("Restart", width / 2, topMargin + (this.resolution.y / 3) * 2);
     pop();
   }
 
@@ -243,18 +250,20 @@ class Game {
    * @private
    */
   DrawUI() {
+    let topMargin = (height - this.resolution.y) / 2;
+
     push();
     strokeWeight(2.5);
     stroke(220);
     fill(150);
     textAlign(CENTER, TOP);
     textSize(30);
-    text(`Score: ${this.player.score}`, width / 2, 20);
+    text(`Score: ${this.player.score}`, width / 2, topMargin + 20);
     textAlign(LEFT, BOTTOM);
     text(
       `Lives: ${this.player.lives}`,
       width / 2 + this.resolution.x / 2 - 250,
-      height - 20,
+      (topMargin + this.resolution.y) - 20,
     );
     pop();
   }
