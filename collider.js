@@ -72,7 +72,14 @@ class Collider {
     let col = true;
     let allNors = [];
     if (collider instanceof CircleCollider) {
-      allNors = normals;
+      let center = createVector(0,0);
+      verts.forEach((vert) => {
+        center.add(vert);
+      });
+      center.div(verts.length);
+      allNors = normals.concat([
+        p5.Vector.sub(center, collider.position).normalize(),
+      ]);
     } else {
       allNors = normals.concat(collider.normals);
     }

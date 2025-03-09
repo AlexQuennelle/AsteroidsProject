@@ -50,35 +50,42 @@ class CircleCollider extends Collider {
   static CheckCollider(pos, rad, collider) {
     let col = true;
     if (collider instanceof CircleCollider) {
-      let nor = p5.Vector.sub(pos, collider.position).normalize();
+      let normal = p5.Vector.sub(pos, collider.position).normalize();
       col = Collider.CheckAxis(
         [
-          p5.Vector.add(pos, p5.Vector.mult(nor, rad)),
-          p5.Vector.add(pos, p5.Vector.mult(nor, -rad)),
+          p5.Vector.add(pos, p5.Vector.mult(normal, rad)),
+          p5.Vector.add(pos, p5.Vector.mult(normal, -rad)),
         ],
         [
           p5.Vector.add(
             collider.position,
-            p5.Vector.mult(nor, collider.radius),
+            p5.Vector.mult(normal, collider.radius),
           ),
           p5.Vector.add(
             collider.position,
-            p5.Vector.mult(nor, -collider.radius),
+            p5.Vector.mult(normal, -collider.radius),
           ),
         ],
-        nor,
+        normal,
       );
     } else {
-      collider.normals.forEach((nor) => {
-        col &&= Collider.CheckAxis(
-          [
-            p5.Vector.add(pos, p5.Vector.mult(nor, rad)),
-            p5.Vector.add(pos, p5.Vector.mult(nor, -rad)),
-          ],
-          collider.verts,
-          nor,
-        );
+      let center = createVector(0, 0);
+      collider.verts.forEach((vert) => {
+        center.add(vert);
       });
+      center.div(collider.verts.length);
+      collider.normals
+        .concat([p5.Vector.sub(pos, center).normalize()])
+        .forEach((nor) => {
+          col &&= Collider.CheckAxis(
+            [
+              p5.Vector.add(pos, p5.Vector.mult(nor, rad)),
+              p5.Vector.add(pos, p5.Vector.mult(nor, -rad)),
+            ],
+            collider.verts,
+            nor,
+          );
+        });
     }
     return col;
   }
