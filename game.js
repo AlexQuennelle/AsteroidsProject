@@ -30,9 +30,17 @@ class Game {
     this.toSpawn = [];
   }
 
+  /**
+   * Starts the game
+   * @returns {void}
+   * @private
+   */
   StartGame() {
     this.SpawnPlayer();
-    this.SpawnAsteroids();
+    //this.SpawnAsteroids();
+    this.actors.push(
+      new Saucer(createVector(this.resolution.x / 2, this.resolution.y / 3)),
+    );
   }
 
   /**
@@ -263,7 +271,7 @@ class Game {
     text(
       `Lives: ${this.player.lives}`,
       width / 2 + this.resolution.x / 2 - 250,
-      (topMargin + this.resolution.y) - 20,
+      topMargin + this.resolution.y - 20,
     );
     pop();
   }
