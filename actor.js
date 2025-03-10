@@ -139,6 +139,9 @@ class Actor {
       ) {
         continue;
       }
+      if (actors[i] instanceof PlayerShip && actors[i].iFrames > 0) {
+        continue;
+      }
       let actorCol = false;
       for (let j = 0; j < this.colliders.length; j++) {
         actorCol ||= this.colliders[j].CheckCollision(

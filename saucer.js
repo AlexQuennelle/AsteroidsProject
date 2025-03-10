@@ -46,7 +46,6 @@ class Saucer extends Actor {
 
   Die() {
     super.Die();
-    gameInstance.ShakeScreen();
   }
 
   Update() {

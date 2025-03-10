@@ -37,6 +37,7 @@ class Game {
     this.timeToNextSaucer = random(180, 600);
 
     this.screenShakeTime = 0;
+    this.level = 1;
   }
 
   ShakeScreen() {
@@ -59,7 +60,6 @@ class Game {
         return item instanceof Saucer;
       })
     ) {
-      print("hold");
       return;
     }
     if (this.player.score < 40000) {
@@ -82,8 +82,8 @@ class Game {
    * @returns {void}
    * @private
    */
-  SpawnAsteroids(number = round(random(3, 5))) {
-    for (let i = 0; i < number; i++) {
+  SpawnAsteroids() {
+    for (let i = 0; i < (this.level * 2 + 3); i++) {
       let p = random();
       let asteroid = new Asteroid(
         createVector(
@@ -237,6 +237,7 @@ class Game {
         return actor instanceof Asteroid || actor instanceof Saucer;
       })
     ) {
+      this.level++;
       this.SpawnAsteroids();
     }
     if (this.timeToNextSaucer > 0) {
