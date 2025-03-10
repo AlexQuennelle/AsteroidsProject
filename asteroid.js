@@ -34,10 +34,11 @@ class Asteroid extends Actor {
   }
 
   Die() {
-    if (this.size > 0) {
+    if (this.size > 1) {
       gameInstance.toSpawn.push(new Asteroid(this.position, this.size - 1));
       gameInstance.toSpawn.push(new Asteroid(this.position, this.size - 1));
     }
+    super.Die();
   }
 
   /******************************************/

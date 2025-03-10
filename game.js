@@ -27,7 +27,14 @@ class Game {
      * @type {Actor[]}
      */
     this.actors = [];
+    /**
+     * List of actors to spawn next update loop
+     * @type {Actor[]}
+     * @private
+     */
     this.toSpawn = [];
+
+    this.timeToNextSaucer = random(180, 600);
   }
 
   /**
@@ -37,10 +44,30 @@ class Game {
    */
   StartGame() {
     this.SpawnPlayer();
-    //this.SpawnAsteroids();
-    this.actors.push(
-      new Saucer(createVector(this.resolution.x / 2, this.resolution.y / 3)),
-    );
+    this.SpawnAsteroids();
+  }
+
+  SpawnSaucer() {
+    if (
+      this.actors.some((item) => {
+        return item instanceof Saucer;
+      })
+    ) {
+      print("hold");
+      return;
+    }
+    if (this.player.score < 40000) {
+      this.actors.push(
+        random() < 0.7
+          ? new Saucer(createVector(0, random(0, this.resolution.y)))
+          : new SmallSaucer(createVector(0, random(0, this.resolution.y))),
+      );
+    } else {
+      this.actors.push(
+        new SmallSaucer(createVector(0, random(0, this.resolution.y))),
+      );
+    }
+    this.timeToNextSaucer = random(180, 600);
   }
 
   /**
@@ -199,6 +226,18 @@ class Game {
    * @private
    */
   UpdatePysics() {
+    if (
+      !this.actors.some((actor) => {
+        return actor instanceof Asteroid || actor instanceof Saucer;
+      })
+    ) {
+      this.SpawnAsteroids();
+    }
+    if (this.timeToNextSaucer > 0) {
+      this.timeToNextSaucer--;
+    } else {
+      this.SpawnSaucer();
+    }
     //filter out dead actors
     let newActors = [];
     this.actors.forEach((actor) => {

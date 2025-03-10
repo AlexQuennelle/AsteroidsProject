@@ -147,8 +147,21 @@ class Actor {
           actors[i],
         );
         if (actorCol) {
-          if (this instanceof Bullet) {
-            if (actors[i] instanceof Asteroid) {
+          if (
+            (this instanceof Bullet && this.isPlayerBullet) ||
+            (actors[i] instanceof Bullet && actors[i].isPlayerBullet)
+          ) {
+            if (actors[i] instanceof Saucer) {
+              gameInstance.player.IncrementScore(
+                actors[i] instanceof SmallSaucer ? 1000 : 200,
+              );
+            }
+            if (this instanceof Saucer) {
+              gameInstance.player.IncrementScore(
+                this instanceof SmallSaucer ? 1000 : 200,
+              );
+            }
+            if (actors[i] instanceof Asteroid || this instanceof Asteroid) {
               let points = 0;
               switch (actors[i].size) {
                 case 1:
@@ -162,6 +175,11 @@ class Actor {
                   break;
               }
               gameInstance.player.IncrementScore(points);
+            } else if (actors[i] instanceof Saucer) {
+              print("saucer");
+              gameInstance.player.IncrementScore(
+                actors[i] instanceof SmallSaucer ? 1000 : 200,
+              );
             }
           }
           actors[i].hit = true;

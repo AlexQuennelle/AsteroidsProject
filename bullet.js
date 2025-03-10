@@ -40,7 +40,7 @@ class Bullet extends Actor {
     let newActors = [];
     actors.forEach((actor) => {
       if (
-        !(actor instanceof PlayerShip) ||
+        !(actor instanceof PlayerShip || actor instanceof Saucer) ||
         (actor instanceof PlayerShip && !this.isPlayerBullet)
       ) {
         newActors.push(actor);

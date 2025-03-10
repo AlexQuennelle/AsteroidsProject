@@ -89,7 +89,6 @@ class PlayerShip extends Actor {
   Die() {
     super.Die();
     if (this.lives <= 0) {
-      // TODO: proper game over logic
       print("GAME OVER!");
       gameInstance.GameOver();
     }
