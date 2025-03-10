@@ -104,6 +104,7 @@ class PlayerShip extends Actor {
     );
     this.velocity = createVector(0, 0);
     this.rotation = 0;
+    gameInstance.ShakeScreen();
   }
 
   Teleport() {

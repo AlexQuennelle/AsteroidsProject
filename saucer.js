@@ -44,6 +44,11 @@ class Saucer extends Actor {
     this.aimRange = 22.5;
   }
 
+  Die() {
+    super.Die();
+    gameInstance.ShakeScreen();
+  }
+
   Update() {
     //firing logic
     if (this.shootCooldown <= 0) {

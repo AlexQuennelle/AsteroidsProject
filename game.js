@@ -35,6 +35,12 @@ class Game {
     this.toSpawn = [];
 
     this.timeToNextSaucer = random(180, 600);
+
+    this.screenShakeTime = 0;
+  }
+
+  ShakeScreen() {
+    this.screenShakeTime = 15;
   }
 
   /**
@@ -273,6 +279,10 @@ class Game {
    */
   DrawGameplay() {
     push();
+    if (this.screenShakeTime > 0) {
+      translate(p5.Vector.random2D().mult((this.screenShakeTime / 15) * 2));
+      this.screenShakeTime--;
+    }
     translate(
       width / 2 - this.resolution.x / 2,
       height / 2 - this.resolution.y / 2,
