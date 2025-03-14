@@ -8,7 +8,7 @@ class Actor {
    * @param {vec2[]} verts The vertices that make up the actor's shape
    * @param {Collider[]} cols A list of colliders that make up the actor's collision shape
    */
-  constructor(pos, verts, cols) {
+  constructor(pos, verts, cols, collisionLayer) {
     /**
      * The actor's current position in 2D space
      * @type {vec2}
@@ -63,6 +63,19 @@ class Actor {
      * @public
      */
     this.isDead = false;
+    /**
+     * The actor's collision layer.
+     * Actors on the same collision layer will not collide
+     * @type {number}
+     * @protected
+     */
+    this.collisionLayer = collisionLayer;
+    /**
+     * The collision layers that have collided with this actor
+     * @type {number[]}
+     * @protected
+     */
+    this.hitLayers = [];
   }
 
   /**
@@ -119,6 +132,7 @@ class Actor {
    * @public
    */
   Die() {
+    this.hitLayers = [];
     // TODO: Implement particle spawning etc.
   }
 
@@ -131,15 +145,16 @@ class Actor {
    * @public
    */
   CheckCollisions(actors) {
+    let newActors = actors.filter((actor) => {
+      return (
+        this.position.dist(actor.position) <=
+        this.collisionRadius + actor.collisionRadius &&
+        this.collisionLayer !== actor.collisionLayer
+      );
+    }, this);
     let col = false;
-    for (let i = 0; i < actors.length; i++) {
-      if (
-        this.position.dist(actors[i].position) >
-        this.collisionRadius + actors[i].collisionRadius
-      ) {
-        continue;
-      }
-      if (actors[i] instanceof PlayerShip && actors[i].iFrames > 0) {
+    for (let i = 0; i < newActors.length; i++) {
+      if (newActors[i] instanceof PlayerShip && newActors[i].iFrames > 0) {
         continue;
       }
       let actorCol = false;
@@ -147,45 +162,12 @@ class Actor {
         actorCol ||= this.colliders[j].CheckCollision(
           this.position,
           this.rotation,
-          actors[i],
+          newActors[i],
         );
         if (actorCol) {
-          if (
-            (this instanceof Bullet && this.isPlayerBullet) ||
-            (actors[i] instanceof Bullet && actors[i].isPlayerBullet)
-          ) {
-            if (actors[i] instanceof Saucer) {
-              gameInstance.player.IncrementScore(
-                actors[i] instanceof SmallSaucer ? 1000 : 200,
-              );
-            }
-            if (this instanceof Saucer) {
-              gameInstance.player.IncrementScore(
-                this instanceof SmallSaucer ? 1000 : 200,
-              );
-            }
-            if (actors[i] instanceof Asteroid || this instanceof Asteroid) {
-              let points = 0;
-              switch (actors[i].size) {
-                case 1:
-                  points = 100;
-                  break;
-                case 2:
-                  points = 50;
-                  break;
-                case 3:
-                  points = 20;
-                  break;
-              }
-              gameInstance.player.IncrementScore(points);
-            } else if (actors[i] instanceof Saucer) {
-              print("saucer");
-              gameInstance.player.IncrementScore(
-                actors[i] instanceof SmallSaucer ? 1000 : 200,
-              );
-            }
-          }
-          actors[i].hit = true;
+          newActors[i].hitLayers.push(this.collisionLayer);
+          newActors[i].hit = true;
+          this.hitLayers.push(newActors[i].collisionLayer);
           col ||= actorCol;
           break;
         }

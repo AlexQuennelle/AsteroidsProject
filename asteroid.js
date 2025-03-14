@@ -14,6 +14,7 @@ class Asteroid extends Actor {
       pos,
       Asteroid.GetShape(shape, size),
       Asteroid.GetCollider(shape, size),
+      1,
     );
     this.velocity = p5.Vector.random2D().mult(0.5 * (4 - size));
     this.angularVelocity = random(-0.75, 0.75);
@@ -25,15 +26,26 @@ class Asteroid extends Actor {
     this.size = size;
   }
 
-  CheckCollisions(actors) {
-    return super.CheckCollisions(
-      actors.filter((actor) => {
-        !(actor instanceof Asteroid);
-      }),
-    );
-  }
-
   Die() {
+    if (
+      this.hitLayers.some((layer) => {
+        return layer === 0;
+      }, this)
+    ) {
+      let points = 0;
+      switch (this.size) {
+        case 1:
+          points = 100;
+          break;
+        case 2:
+          points = 50;
+          break;
+        case 3:
+          points = 20;
+          break;
+      }
+      gameInstance.player.IncrementScore(points);
+    }
     if (this.size > 1) {
       gameInstance.toSpawn.push(new Asteroid(this.position, this.size - 1));
       gameInstance.toSpawn.push(new Asteroid(this.position, this.size - 1));

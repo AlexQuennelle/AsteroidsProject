@@ -5,11 +5,10 @@
 class Bullet extends Actor {
   /**
    * @param {vec2} position
-   * @param {boolean} isPlayerBullet wether the bullet belongs to the player
+   * @param {number} owner wether the bullet belongs to the player
    */
-  constructor(position, isPlayerBullet) {
-    super(position, [], [new CircleCollider(createVector(0, 0), 5)]);
-    this.isPlayerBullet = isPlayerBullet;
+  constructor(position, owner) {
+    super(position, [], [new CircleCollider(createVector(0, 0), 5)], owner);
     this.radius = 5;
     this.lifetime = 45;
   }
@@ -27,25 +26,5 @@ class Bullet extends Actor {
     noStroke();
     circle(this.position.x, this.position.y, this.radius * 2);
     pop();
-  }
-  /**
-   *
-   * Added logic for ignoring the projectile's owner
-   * @inheritdoc {Actor.CheckCollisions}
-   *
-   * @param {Actor[]} actors
-   */
-  CheckCollisions(actors) {
-    /**@type {Actor[]} */
-    let newActors = [];
-    actors.forEach((actor) => {
-      if (
-        !(actor instanceof PlayerShip || actor instanceof Saucer) ||
-        (actor instanceof PlayerShip && !this.isPlayerBullet)
-      ) {
-        newActors.push(actor);
-      }
-    });
-    return super.CheckCollisions(newActors);
   }
 }

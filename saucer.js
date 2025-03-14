@@ -20,7 +20,7 @@ class Saucer extends Actor {
       new Collider([verts[0], verts[1], verts[2], verts[3]]),
       new Collider([verts[4], verts[5], verts[6], verts[7]]),
     ];
-    super(pos, verts, colliders);
+    super(pos, verts, colliders, 2);
     /**
      * The number of frames until the saucer can fire a projectile
      * @type {number}
@@ -45,6 +45,15 @@ class Saucer extends Actor {
   }
 
   Die() {
+    if (
+      this.hitLayers.some((layer) => {
+        return layer === 0;
+      }, this)
+    ) {
+      gameInstance.player.IncrementScore(
+        this instanceof SmallSaucer ? 1000 : 200,
+      );
+    }
     super.Die();
   }
 
@@ -98,30 +107,16 @@ class Saucer extends Actor {
       .normalize()
       .rotate(random(-this.aimRange, this.aimRange));
 
-    let bullet = new Bullet(p5.Vector.add(this.position, shootDir), false);
+    let bullet = new Bullet(
+      p5.Vector.add(this.position, shootDir),
+      this.collisionLayer,
+    );
     bullet.velocity = p5.Vector.mult(shootDir, 10);
     this.velocity = p5.Vector.add(
       p5.Vector.mult(shootDir, -1.25),
       this.velocity,
     );
     gameInstance.actors.push(bullet);
-  }
-
-  /**
-   * @param {Actor[]} actors
-   * @inheritdoc
-   */
-  CheckCollisions(actors) {
-    let newActors = [];
-    actors.forEach((actor) => {
-      if (
-        !(actor instanceof Bullet) ||
-        (actor instanceof Bullet && actor.isPlayerBullet)
-      ) {
-        newActors.push(actor);
-      }
-    });
-    return super.CheckCollisions(newActors);
   }
 
   Draw() {

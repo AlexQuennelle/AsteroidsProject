@@ -17,7 +17,7 @@ class PlayerShip extends Actor {
       new Collider([verts[0], verts[2], verts[3]]),
     ];
     //call base constructor
-    super(pos, verts, cols);
+    super(pos, verts, cols, 0);
     /**
      * The player's current score.
      * @type {number}
@@ -159,7 +159,7 @@ class PlayerShip extends Actor {
   Shoot() {
     let bullet = new Bullet(
       p5.Vector.add(this.position, createVector(0, -20).rotate(this.rotation)),
-      true,
+      this.collisionLayer,
     );
     bullet.velocity = createVector(0, -10).rotate(this.rotation);
     this.velocity = p5.Vector.add(
@@ -194,15 +194,6 @@ class PlayerShip extends Actor {
     if (this.iFrames > 0) {
       return false;
     }
-    let newActors = [];
-    actors.forEach((actor) => {
-      if (
-        !(actor instanceof Bullet) ||
-        (actor instanceof Bullet && !actor.isPlayerBullet)
-      ) {
-        newActors.push(actor);
-      }
-    });
-    return super.CheckCollisions(newActors);
+    return super.CheckCollisions(actors);
   }
 }

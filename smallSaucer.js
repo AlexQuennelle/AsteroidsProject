@@ -33,7 +33,10 @@ class SmallSaucer extends Saucer {
       .normalize()
       .rotate(random(-this.aimRange, this.aimRange));
 
-    let bullet = new Bullet(p5.Vector.add(this.position, shootDir), false);
+    let bullet = new Bullet(
+      p5.Vector.add(this.position, shootDir),
+      this.collisionLayer,
+    );
     bullet.velocity = p5.Vector.mult(shootDir, 10);
     this.velocity = p5.Vector.add(
       p5.Vector.mult(shootDir, -1.25),
