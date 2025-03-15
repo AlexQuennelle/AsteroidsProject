@@ -34,7 +34,7 @@ class Saucer extends Actor {
      */
     this.moveDir = createVector(random() > 0.5 ? 1 : -1, 0).normalize();
     if (this.moveDir.x < 0) {
-      this.position.add(createVector(gameInstance.resolution.x, 0));
+      //this.position.add(createVector(gameInstance.resolution.x, 0));
     }
     /**
      * The amount the saucer's aim can be randomly rotated in either direciton

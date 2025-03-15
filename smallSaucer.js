@@ -20,6 +20,14 @@ class SmallSaucer extends Saucer {
       ]),
     ];
     this.aimRange = 2.5;
+
+    this.sensor = new CircleCollider(createVector(0, 0), 200);
+    this.upBooster = false;
+    this.downBooster = false;
+    this.leftBooster = false;
+    this.rightBooster = false;
+
+    this.actorsSensed = [];
   }
 
   /**
@@ -43,5 +51,39 @@ class SmallSaucer extends Saucer {
       this.velocity,
     );
     gameInstance.actors.push(bullet);
+  }
+
+  Update() {
+    //set velocities to 0 if they're below a certain threshold
+    if (this.velocity.mag() <= 0.001) {
+      this.velocity = createVector(0, 0);
+    }
+
+    //update the actor's position with it's velocity
+    this.position = p5.Vector.add(this.position, this.velocity);
+    this.rotation += this.angularVelocity;
+
+    //kill the actor if it has been hit
+    this.isDead = this.hit;
+
+    //wrap the actor's position at the edges of the game
+    this.position = createVector(
+      this.position.x,
+      (this.position.y + gameInstance.resolution.y) % gameInstance.resolution.y,
+    );
+    //kill saucers that leave the left or right edge of the screen
+    if (
+      this.position.x + 50 < 0 ||
+      this.position.x - 50 > gameInstance.resolution.x
+    ) {
+      this.isDead = true;
+    }
+  }
+
+  CheckCollisions(actors) {
+    actors.forEach((actor) => {
+
+    });
+    return super.CheckCollisions(actors);
   }
 }
