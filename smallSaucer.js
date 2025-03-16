@@ -34,7 +34,7 @@ class SmallSaucer extends Saucer {
      */
     this.actorsSensed = [];
 
-    this.targetDir = createVector(this.sensor.radius / 4, 0);
+    this.targetDir = createVector(1, 0);
   }
 
   /**
@@ -61,6 +61,11 @@ class SmallSaucer extends Saucer {
   }
 
   Update() {
+    //firing logic
+    if (this.shootCooldown <= 0) {
+      this.Shoot();
+    }
+    this.shootCooldown = this.shootCooldown > 0 ? this.shootCooldown - 1 : 0;
     //set velocities to 0 if they're below a certain threshold
     this.velocity = p5.Vector.mult(this.velocity, 0.9);
     if (this.velocity.mag() <= 0.001) {
@@ -72,7 +77,7 @@ class SmallSaucer extends Saucer {
     if (this.upBooster) {
       this.velocity = p5.Vector.add(
         this.velocity,
-        createVector(0, 0.02 * deltaTime),
+        createVector(0, -0.02 * deltaTime),
       );
     }
     if (this.rightBooster) {
@@ -84,31 +89,13 @@ class SmallSaucer extends Saucer {
     if (this.downBooster) {
       this.velocity = p5.Vector.add(
         this.velocity,
-        createVector(0, -0.02 * deltaTime),
+        createVector(0, 0.02 * deltaTime),
       );
     }
     if (this.leftBooster) {
       this.velocity = p5.Vector.add(
         this.velocity,
         createVector(-0.02 * deltaTime, 0),
-      );
-    }
-    if (
-      !(
-        this.upBooster ||
-        this.rightBooster ||
-        this.downBooster ||
-        this.leftBooster
-      )
-    ) {
-      this.velocity = p5.Vector.add(
-        this.velocity,
-        random([
-          createVector(0, 0.02 * deltaTime),
-          createVector(0.02 * deltaTime, 0),
-          createVector(0, -0.02 * deltaTime),
-          createVector(-0.02 * deltaTime, 0),
-        ]),
       );
     }
 
@@ -133,26 +120,91 @@ class SmallSaucer extends Saucer {
     }
   }
 
+  //Draw() {
+  //  this.actorsSensed = this.actorsSensed.sort((a, b) => {
+  //    return (
+  //      p5.Vector.dist(this.position, a.position) -
+  //      a.collisionRadius -
+  //      (p5.Vector.dist(this.position, b.position) - b.collisionRadius)
+  //    );
+  //  });
+  //  push();
+  //  strokeWeight(5);
+  //  fill(255, 0, 0, 128);
+  //  let avgDir = createVector(0, 0);
+  //  this.actorsSensed.forEach((actor) => {
+  //    let dir = p5.Vector.sub(this.position, actor.position);
+  //    dir = p5.Vector.mult(
+  //      p5.Vector.normalize(dir),
+  //      this.sensor.radius - (p5.Vector.mag(dir) - actor.collisionRadius),
+  //    );
+  //    avgDir = p5.Vector.add(avgDir, dir);
+  //    noStroke();
+  //    circle(actor.position.x, actor.position.y, actor.collisionRadius * 2);
+  //    stroke("red");
+  //    line(
+  //      this.position.x,
+  //      this.position.y,
+  //      this.position.x + dir.x,
+  //      this.position.y + dir.y,
+  //    );
+  //  }, this);
+  //  if (this.actorsSensed.length > 1) {
+  //    avgDir = p5.Vector.div(avgDir, this.actorsSensed.length - 1);
+  //  }
+  //  avgDir = p5.Vector.mult(
+  //    this.targetDir,
+  //    1 - avgDir.mag() / this.sensor.radius,
+  //  )
+  //    .add(p5.Vector.normalize(avgDir).mult(avgDir.mag() / this.sensor.radius))
+  //    .mult(this.sensor.radius);
+  //  stroke(0, 0, 255, 128);
+  //  line(
+  //    this.position.x,
+  //    this.position.y,
+  //    this.position.x + avgDir.x,
+  //    this.position.y + avgDir.y,
+  //  );
+  //  pop();
+  //  super.Draw();
+  //  push();
+  //  noFill();
+  //  stroke("green");
+  //  strokeWeight(2.5);
+  //  circle(this.position.x, this.position.y, this.sensor.radius * 2);
+  //  pop();
+  //}
+
   CalculateThrust() {
     this.upBooster = false;
     this.downBooster = false;
     this.leftBooster = false;
     this.rightBooster = false;
 
-    let thrustDir = this.targetDir;
+    let thrustDir = createVector(0, 0);
     this.actorsSensed.forEach((actor) => {
-      let mag =
-        this.sensor.radius -
-        (p5.Vector.dist(this.position, actor.position) - actor.collisionRadius);
-      let dir = p5.Vector.sub(this.position, actor.position)
-        .normalize()
-        .mult(-mag);
-      print(`dir ${dir}`);
+      let dir = p5.Vector.sub(this.position, actor.position);
+      dir = p5.Vector.mult(
+        p5.Vector.normalize(dir),
+        this.sensor.radius - (p5.Vector.mag(dir) - actor.collisionRadius),
+      );
       thrustDir = p5.Vector.add(thrustDir, dir);
-    });
-    thrustDir = p5.Vector.div(thrustDir, this.actorsSensed.length + 1);
+    }, this);
+    if (this.actorsSensed.length > 1) {
+      thrustDir = p5.Vector.div(thrustDir, this.actorsSensed.length - 1);
+    }
+    thrustDir = p5.Vector.mult(
+      this.targetDir,
+      1 - thrustDir.mag() / this.sensor.radius,
+    ).add(
+      p5.Vector.normalize(thrustDir).mult(thrustDir.mag() / this.sensor.radius),
+    );
+
+    let alignment = p5.Vector.dot(thrustDir, this.targetDir);
+    if (alignment < -0.5) {
+      thrustDir = createVector(thrustDir.y, -thrustDir.x);
+    }
     thrustDir = p5.Vector.normalize(thrustDir);
-    print(thrustDir);
 
     let xDir = p5.Vector.dot(thrustDir, createVector(1, 0));
     let yDir = p5.Vector.dot(thrustDir, createVector(0, 1));

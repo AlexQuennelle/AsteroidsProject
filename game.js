@@ -52,17 +52,9 @@ class Game {
   StartGame() {
     this.SpawnPlayer();
     this.SpawnAsteroids();
-    //debug
-    this.toSpawn.push(
-      new SmallSaucer(
-        createVector(0, this.resolution.y / 3),
-      ),
-    );
   }
 
   SpawnSaucer() {
-    //debug
-    return;
     if (
       this.actors.some((item) => {
         return item instanceof Saucer;
@@ -91,8 +83,6 @@ class Game {
    * @private
    */
   SpawnAsteroids() {
-    //debug
-    //return;
     for (let i = 0; i < this.level * 2 + 3; i++) {
       let p = random();
       let asteroid = new Asteroid(
