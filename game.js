@@ -55,7 +55,7 @@ class Game {
     //debug
     this.toSpawn.push(
       new SmallSaucer(
-        createVector(this.resolution.x / 2, this.resolution.y / 3),
+        createVector(0, this.resolution.y / 3),
       ),
     );
   }
@@ -92,7 +92,7 @@ class Game {
    */
   SpawnAsteroids() {
     //debug
-    return;
+    //return;
     for (let i = 0; i < this.level * 2 + 3; i++) {
       let p = random();
       let asteroid = new Asteroid(

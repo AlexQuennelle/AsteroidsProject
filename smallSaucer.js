@@ -27,7 +27,14 @@ class SmallSaucer extends Saucer {
     this.leftBooster = false;
     this.rightBooster = false;
 
+    /**
+     * list of actors the saucer is aware of
+     * @type {Actor[]}
+     * @private
+     */
     this.actorsSensed = [];
+
+    this.targetDir = createVector(this.sensor.radius / 4, 0);
   }
 
   /**
@@ -55,8 +62,54 @@ class SmallSaucer extends Saucer {
 
   Update() {
     //set velocities to 0 if they're below a certain threshold
+    this.velocity = p5.Vector.mult(this.velocity, 0.9);
     if (this.velocity.mag() <= 0.001) {
       this.velocity = createVector(0, 0);
+    }
+
+    this.CalculateThrust();
+
+    if (this.upBooster) {
+      this.velocity = p5.Vector.add(
+        this.velocity,
+        createVector(0, 0.02 * deltaTime),
+      );
+    }
+    if (this.rightBooster) {
+      this.velocity = p5.Vector.add(
+        this.velocity,
+        createVector(0.02 * deltaTime, 0),
+      );
+    }
+    if (this.downBooster) {
+      this.velocity = p5.Vector.add(
+        this.velocity,
+        createVector(0, -0.02 * deltaTime),
+      );
+    }
+    if (this.leftBooster) {
+      this.velocity = p5.Vector.add(
+        this.velocity,
+        createVector(-0.02 * deltaTime, 0),
+      );
+    }
+    if (
+      !(
+        this.upBooster ||
+        this.rightBooster ||
+        this.downBooster ||
+        this.leftBooster
+      )
+    ) {
+      this.velocity = p5.Vector.add(
+        this.velocity,
+        random([
+          createVector(0, 0.02 * deltaTime),
+          createVector(0.02 * deltaTime, 0),
+          createVector(0, -0.02 * deltaTime),
+          createVector(-0.02 * deltaTime, 0),
+        ]),
+      );
     }
 
     //update the actor's position with it's velocity
@@ -80,10 +133,48 @@ class SmallSaucer extends Saucer {
     }
   }
 
-  CheckCollisions(actors) {
-    actors.forEach((actor) => {
+  CalculateThrust() {
+    this.upBooster = false;
+    this.downBooster = false;
+    this.leftBooster = false;
+    this.rightBooster = false;
 
+    let thrustDir = this.targetDir;
+    this.actorsSensed.forEach((actor) => {
+      let mag =
+        this.sensor.radius -
+        (p5.Vector.dist(this.position, actor.position) - actor.collisionRadius);
+      let dir = p5.Vector.sub(this.position, actor.position)
+        .normalize()
+        .mult(-mag);
+      print(`dir ${dir}`);
+      thrustDir = p5.Vector.add(thrustDir, dir);
     });
+    thrustDir = p5.Vector.div(thrustDir, this.actorsSensed.length + 1);
+    thrustDir = p5.Vector.normalize(thrustDir);
+    print(thrustDir);
+
+    let xDir = p5.Vector.dot(thrustDir, createVector(1, 0));
+    let yDir = p5.Vector.dot(thrustDir, createVector(0, 1));
+    if (xDir >= 0.5) {
+      this.rightBooster = true;
+    } else if (xDir <= -0.5) {
+      this.leftBooster = true;
+    }
+    if (yDir >= 0.5) {
+      this.downBooster = true;
+    } else if (yDir <= -0.5) {
+      this.upBooster = true;
+    }
+  }
+
+  CheckCollisions(actors) {
+    this.actorsSensed = [];
+    actors.forEach((actor) => {
+      if (this.sensor.CheckCollision(this.position, 0, actor)) {
+        this.actorsSensed.push(actor);
+      }
+    }, this);
     return super.CheckCollisions(actors);
   }
 }
