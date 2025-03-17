@@ -79,11 +79,35 @@ class SmallSaucer extends Saucer {
         this.velocity,
         createVector(0, -0.02 * deltaTime),
       );
+      gameInstance.particles.push(
+        new Particle(
+          p5.Vector.add(
+            this.position,
+            createVector(0, 10).rotate(random(-30, 30)),
+          ),
+          round(random(3, 10)),
+          createVector(0, 0),
+          1,
+          "red",
+        ),
+      );
     }
     if (this.rightBooster) {
       this.velocity = p5.Vector.add(
         this.velocity,
         createVector(0.02 * deltaTime, 0),
+      );
+      gameInstance.particles.push(
+        new Particle(
+          p5.Vector.add(
+            this.position,
+            createVector(-20, 0).rotate(random(-30, 30)),
+          ),
+          round(random(3, 10)),
+          createVector(0, 0),
+          1,
+          "red",
+        ),
       );
     }
     if (this.downBooster) {
@@ -91,11 +115,35 @@ class SmallSaucer extends Saucer {
         this.velocity,
         createVector(0, 0.02 * deltaTime),
       );
+      gameInstance.particles.push(
+        new Particle(
+          p5.Vector.add(
+            this.position,
+            createVector(0, -10).rotate(random(-30, 30)),
+          ),
+          round(random(3, 10)),
+          createVector(0, 0),
+          1,
+          "red",
+        ),
+      );
     }
     if (this.leftBooster) {
       this.velocity = p5.Vector.add(
         this.velocity,
         createVector(-0.02 * deltaTime, 0),
+      );
+      gameInstance.particles.push(
+        new Particle(
+          p5.Vector.add(
+            this.position,
+            createVector(20, 0).rotate(random(-30, 30)),
+          ),
+          round(random(3, 10)),
+          createVector(0, 0),
+          1,
+          "red",
+        ),
       );
     }
 

@@ -54,7 +54,17 @@ class Saucer extends Actor {
         this instanceof SmallSaucer ? 1000 : 200,
       );
     }
-    super.Die();
+    this.hitLayers = [];
+    for (let i = 0; i < round(random(5, 15)); i++) {
+      let particle = new Particle(
+        this.position,
+        round(random(3, 7)),
+        p5.Vector.random2D().mult(random(1, 5)),
+        0.9,
+        "orange",
+      );
+      gameInstance.particles.push(particle);
+    }
   }
 
   Update() {

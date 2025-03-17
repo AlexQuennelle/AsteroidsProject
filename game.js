@@ -34,10 +34,15 @@ class Game {
      */
     this.toSpawn = [];
 
+    /**@type {number} */
     this.timeToNextSaucer = random(180, 600);
 
+    /**@type {number} */
     this.screenShakeTime = 0;
+    /**@type {number} */
     this.level = 1;
+    /**@type {Particle[]} */
+    this.particles = [];
   }
 
   ShakeScreen() {
@@ -298,7 +303,16 @@ class Game {
     this.actors.forEach((actor) => {
       actor.Draw();
     });
+    let survivingParticles = [];
+    this.particles.forEach((particle) => {
+      particle.Update();
+      if (particle.lifetime > 0) {
+        survivingParticles.push(particle);
+      }
+    });
+    this.particles = survivingParticles;
     pop();
+
     this.DrawUI();
   }
 

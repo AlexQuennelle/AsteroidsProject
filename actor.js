@@ -133,7 +133,15 @@ class Actor {
    */
   Die() {
     this.hitLayers = [];
-    // TODO: Implement particle spawning etc.
+    for (let i = 0; i < round(random(5, 15)); i++) {
+      let particle = new Particle(
+        this.position,
+        round(random(3, 7)),
+        p5.Vector.random2D().mult(random(1, 5)),
+        0.9,
+      );
+      gameInstance.particles.push(particle);
+    }
   }
 
   /**
@@ -148,7 +156,7 @@ class Actor {
     let newActors = actors.filter((actor) => {
       return (
         this.position.dist(actor.position) <=
-        this.collisionRadius + actor.collisionRadius &&
+          this.collisionRadius + actor.collisionRadius &&
         this.collisionLayer !== actor.collisionLayer
       );
     }, this);
