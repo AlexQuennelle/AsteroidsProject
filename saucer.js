@@ -130,13 +130,29 @@ class Saucer extends Actor {
   }
 
   Draw() {
-    push();
-    fill("orange");
-    super.Draw();
-    push();
-    noStroke();
-    circle(this.position.x, this.position.y, this.colliders[0].radius * 2);
-    pop();
-    pop();
+    let drawShape = (offset = createVector(0, 0)) => {
+      push();
+      translate(offset);
+      fill("orange");
+      noStroke();
+      circle(this.position.x, this.position.y, this.colliders[0].radius * 2);
+      beginShape(TRIANGLE_FAN);
+      this.points.forEach((point) => {
+        let adjustedVert = p5.Vector.rotate(point, this.rotation);
+        vertex(
+          adjustedVert.x + this.position.x,
+          adjustedVert.y + this.position.y,
+        );
+      });
+      endShape(CLOSE);
+      pop();
+    };
+    drawShape();
+    if (this.position.y - this.collisionRadius <= 0) {
+      drawShape(createVector(0, gameInstance.resolution.y));
+    }
+    if (this.position.y + this.collisionRadius >= gameInstance.resolution.y) {
+      drawShape(createVector(0, -gameInstance.resolution.y));
+    }
   }
 }

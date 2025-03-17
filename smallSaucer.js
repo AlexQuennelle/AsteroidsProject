@@ -168,60 +168,60 @@ class SmallSaucer extends Saucer {
     }
   }
 
-  //Draw() {
-  //  this.actorsSensed = this.actorsSensed.sort((a, b) => {
-  //    return (
-  //      p5.Vector.dist(this.position, a.position) -
-  //      a.collisionRadius -
-  //      (p5.Vector.dist(this.position, b.position) - b.collisionRadius)
-  //    );
-  //  });
-  //  push();
-  //  strokeWeight(5);
-  //  fill(255, 0, 0, 128);
-  //  let avgDir = createVector(0, 0);
-  //  this.actorsSensed.forEach((actor) => {
-  //    let dir = p5.Vector.sub(this.position, actor.position);
-  //    dir = p5.Vector.mult(
-  //      p5.Vector.normalize(dir),
-  //      this.sensor.radius - (p5.Vector.mag(dir) - actor.collisionRadius),
-  //    );
-  //    avgDir = p5.Vector.add(avgDir, dir);
-  //    noStroke();
-  //    circle(actor.position.x, actor.position.y, actor.collisionRadius * 2);
-  //    stroke("red");
-  //    line(
-  //      this.position.x,
-  //      this.position.y,
-  //      this.position.x + dir.x,
-  //      this.position.y + dir.y,
-  //    );
-  //  }, this);
-  //  if (this.actorsSensed.length > 1) {
-  //    avgDir = p5.Vector.div(avgDir, this.actorsSensed.length - 1);
-  //  }
-  //  avgDir = p5.Vector.mult(
-  //    this.targetDir,
-  //    1 - avgDir.mag() / this.sensor.radius,
-  //  )
-  //    .add(p5.Vector.normalize(avgDir).mult(avgDir.mag() / this.sensor.radius))
-  //    .mult(this.sensor.radius);
-  //  stroke(0, 0, 255, 128);
-  //  line(
-  //    this.position.x,
-  //    this.position.y,
-  //    this.position.x + avgDir.x,
-  //    this.position.y + avgDir.y,
-  //  );
-  //  pop();
-  //  super.Draw();
-  //  push();
-  //  noFill();
-  //  stroke("green");
-  //  strokeWeight(2.5);
-  //  circle(this.position.x, this.position.y, this.sensor.radius * 2);
-  //  pop();
-  //}
+  Draw() {
+    this.actorsSensed = this.actorsSensed.sort((a, b) => {
+      return (
+        p5.Vector.dist(this.position, a.position) -
+        a.collisionRadius -
+        (p5.Vector.dist(this.position, b.position) - b.collisionRadius)
+      );
+    });
+    push();
+    strokeWeight(5);
+    fill(255, 0, 0, 128);
+    let avgDir = createVector(0, 0);
+    this.actorsSensed.forEach((actor) => {
+      let dir = p5.Vector.sub(this.position, actor.position);
+      dir = p5.Vector.mult(
+        p5.Vector.normalize(dir),
+        this.sensor.radius - (p5.Vector.mag(dir) - actor.collisionRadius),
+      );
+      avgDir = p5.Vector.add(avgDir, dir);
+      noStroke();
+      circle(actor.position.x, actor.position.y, actor.collisionRadius * 2);
+      stroke("red");
+      line(
+        this.position.x,
+        this.position.y,
+        this.position.x + dir.x,
+        this.position.y + dir.y,
+      );
+    }, this);
+    if (this.actorsSensed.length > 1) {
+      avgDir = p5.Vector.div(avgDir, this.actorsSensed.length - 1);
+    }
+    avgDir = p5.Vector.mult(
+      this.targetDir,
+      1 - avgDir.mag() / this.sensor.radius,
+    )
+      .add(p5.Vector.normalize(avgDir).mult(avgDir.mag() / this.sensor.radius))
+      .mult(this.sensor.radius);
+    stroke(0, 0, 255, 128);
+    line(
+      this.position.x,
+      this.position.y,
+      this.position.x + avgDir.x,
+      this.position.y + avgDir.y,
+    );
+    pop();
+    super.Draw();
+    push();
+    noFill();
+    stroke("green");
+    strokeWeight(2.5);
+    circle(this.position.x, this.position.y, this.sensor.radius * 2);
+    pop();
+  }
 
   CalculateThrust() {
     this.upBooster = false;
@@ -268,10 +268,29 @@ class SmallSaucer extends Saucer {
     }
   }
 
+  /**
+   * @param {vec2} actors
+   */
   CheckCollisions(actors) {
+    let isInRadius = (caller, actor, offset = createVector(0, 0)) => {
+      return (
+        caller.position.dist(p5.Vector.add(offset, actor.position)) <=
+        caller.collisionRadius + actor.collisionRadius + this.sensor.radius
+      );
+    };
     this.actorsSensed = [];
     actors.forEach((actor) => {
-      if (this.sensor.CheckCollision(this.position, 0, actor)) {
+      if (
+        (isInRadius(this, actor) ||
+          isInRadius(this, actor, createVector(0, gameInstance.resolution.y)) ||
+          isInRadius(
+            this,
+            actor,
+            createVector(0, -gameInstance.resolution.y),
+          )) &&
+        //this.sensor.CheckCollision(this.position, 0, actor) &&
+        actor.collisionLayer !== this.collisionLayer
+      ) {
         this.actorsSensed.push(actor);
       }
     }, this);

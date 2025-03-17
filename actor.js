@@ -112,18 +112,33 @@ class Actor {
    * @public
    */
   Draw() {
-    push();
-    noStroke();
-    beginShape(TRIANGLE_FAN);
-    this.points.forEach((point) => {
-      let adjustedVert = p5.Vector.rotate(point, this.rotation);
-      vertex(
-        adjustedVert.x + this.position.x,
-        adjustedVert.y + this.position.y,
-      );
-    });
-    endShape(CLOSE);
-    pop();
+    let drawShape = (offset = createVector(0, 0)) => {
+      push();
+      noStroke();
+      beginShape(TRIANGLE_FAN);
+      this.points.forEach((point) => {
+        let adjustedVert = p5.Vector.rotate(point, this.rotation).add(offset);
+        vertex(
+          adjustedVert.x + this.position.x,
+          adjustedVert.y + this.position.y,
+        );
+      });
+      endShape(CLOSE);
+      pop();
+    };
+    drawShape();
+    if (this.position.y - this.collisionRadius <= 0) {
+      drawShape(createVector(0, gameInstance.resolution.y));
+    }
+    if (this.position.y + this.collisionRadius >= gameInstance.resolution.y) {
+      drawShape(createVector(0, -gameInstance.resolution.y));
+    }
+    if (this.position.x - this.collisionRadius <= 0) {
+      drawShape(createVector(gameInstance.resolution.x, 0));
+    }
+    if (this.position.x + this.collisionRadius >= gameInstance.resolution.x) {
+      drawShape(createVector(-gameInstance.resolution.x, 0));
+    }
   }
 
   /**
@@ -153,10 +168,31 @@ class Actor {
    * @public
    */
   CheckCollisions(actors) {
+    let isInRadius = (caller, actor, offset = createVector(0, 0)) => {
+      return (
+        caller.position.dist(p5.Vector.add(offset, actor.position)) <=
+        caller.collisionRadius + actor.collisionRadius
+      );
+    };
     let newActors = actors.filter((actor) => {
       return (
-        this.position.dist(actor.position) <=
-          this.collisionRadius + actor.collisionRadius &&
+        (isInRadius(this, actor) ||
+          isInRadius(
+            this,
+            actor,
+            createVector(0, -gameInstance.resolution.y),
+          ) ||
+          isInRadius(this, actor, createVector(0, gameInstance.resolution.y)) ||
+          isInRadius(
+            this,
+            actor,
+            createVector(-gameInstance.resolution.x, 0),
+          ) ||
+          isInRadius(
+            this,
+            actor,
+            createVector(gameInstance.resolution.x, 0),
+          )) &&
         this.collisionLayer !== actor.collisionLayer
       );
     }, this);
@@ -192,26 +228,78 @@ class Actor {
   GetColliders() {
     /**@type {Collider[]} */
     let colliders = [];
-    this.colliders.forEach((col) => {
-      //special case for circle colliders
-      if (col instanceof CircleCollider) {
-        colliders.push(
-          new CircleCollider(
-            p5.Vector.rotate(col.position, this.rotation).add(this.position),
-            col.radius,
-          ),
-        );
-      } else {
-        /**@type {vec2[]} */
-        let newVerts = [];
-        for (let i = 0; i < col.verts.length; i++) {
-          newVerts.push(
-            p5.Vector.rotate(col.verts[i], this.rotation).add(this.position),
+    let loop = (caller, offset = createVector(0, 0)) => {
+      let colliders = [];
+      caller.colliders.forEach((col) => {
+        //special case for circle colliders
+        if (col instanceof CircleCollider) {
+          colliders.push(
+            new CircleCollider(
+              p5.Vector.rotate(
+                p5.Vector.add(col.position, offset),
+                caller.rotation,
+              )
+                .add(caller.position)
+                .add(offset),
+              col.radius,
+            ),
           );
+        } else {
+          /**@type {vec2[]} */
+          let newVerts = [];
+          for (let i = 0; i < col.verts.length; i++) {
+            newVerts.push(
+              p5.Vector.rotate(col.verts[i], caller.rotation)
+                .add(caller.position)
+                .add(offset),
+            );
+          }
+          colliders.push(new Collider(newVerts, col.normals));
         }
-        colliders.push(new Collider(newVerts, col.normals));
-      }
-    });
+      });
+      return colliders;
+    };
+    colliders = loop(this);
+    //this.colliders.forEach((col) => {
+    //  //special case for circle colliders
+    //  if (col instanceof CircleCollider) {
+    //    colliders.push(
+    //      new CircleCollider(
+    //        p5.Vector.rotate(col.position, this.rotation).add(this.position),
+    //        col.radius,
+    //      ),
+    //    );
+    //  } else {
+    //    /**@type {vec2[]} */
+    //    let newVerts = [];
+    //    for (let i = 0; i < col.verts.length; i++) {
+    //      newVerts.push(
+    //        p5.Vector.rotate(col.verts[i], this.rotation).add(this.position),
+    //      );
+    //    }
+    //    colliders.push(new Collider(newVerts, col.normals));
+    //  }
+    //});
+    if (this.position.y - this.collisionRadius <= 0) {
+      colliders = colliders.concat(
+        loop(this, createVector(0, gameInstance.resolution.y)),
+      );
+    }
+    if (this.position.y + this.collisionRadius >= gameInstance.resolution.y) {
+      colliders = colliders.concat(
+        loop(this, createVector(0, -gameInstance.resolution.y)),
+      );
+    }
+    if (this.position.x - this.collisionRadius <= 0) {
+      colliders = colliders.concat(
+        loop(this, createVector(gameInstance.resolution.x, 0)),
+      );
+    }
+    if (this.position.x + this.collisionRadius >= gameInstance.resolution.x) {
+      colliders = colliders.concat(
+        loop(this, createVector(0, -gameInstance.resolution.x, 0)),
+      );
+    }
     return colliders;
   }
 }
