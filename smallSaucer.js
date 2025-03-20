@@ -61,6 +61,7 @@ class SmallSaucer extends Saucer {
   }
 
   Update() {
+    this.aimRange = (1 - (gameInstance.player.score / 10000)) * 2.5;
     //firing logic
     if (this.shootCooldown <= 0) {
       this.Shoot();
@@ -230,12 +231,14 @@ class SmallSaucer extends Saucer {
     this.rightBooster = false;
 
     let thrustDir = createVector(0, 0);
+    let bias = 0;
     this.actorsSensed.forEach((actor) => {
       let dir = p5.Vector.sub(this.position, actor.position);
       dir = p5.Vector.mult(
         p5.Vector.normalize(dir),
         this.sensor.radius - (p5.Vector.mag(dir) - actor.collisionRadius),
       );
+      bias = p5.Vector.mag(dir) > bias ? p5.Vector.mag(dir) : bias;
       thrustDir = p5.Vector.add(thrustDir, dir);
     }, this);
     if (this.actorsSensed.length > 1) {
@@ -243,9 +246,11 @@ class SmallSaucer extends Saucer {
     }
     thrustDir = p5.Vector.mult(
       this.targetDir,
-      1 - thrustDir.mag() / this.sensor.radius,
+      1 - bias / this.sensor.radius,
+      //1 - thrustDir.mag() / this.sensor.radius,
     ).add(
-      p5.Vector.normalize(thrustDir).mult(thrustDir.mag() / this.sensor.radius),
+      p5.Vector.normalize(thrustDir).mult(bias / this.sensor.radius),
+      //p5.Vector.normalize(thrustDir).mult(thrustDir.mag() / this.sensor.radius),
     );
 
     let alignment = p5.Vector.dot(thrustDir, this.targetDir);
