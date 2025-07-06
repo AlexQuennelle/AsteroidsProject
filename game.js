@@ -59,8 +59,6 @@ class Game {
   StartGame() {
     this.SpawnPlayer();
     this.SpawnAsteroids();
-    //this.mouseteroid = new Asteroid(createVector(0, 0), 2);
-    //this.actors.push(this.mouseteroid);
   }
 
   SpawnSaucer() {
@@ -92,7 +90,6 @@ class Game {
    * @private
    */
   SpawnAsteroids() {
-    //return;
     for (let i = 0; i < this.level * 2 + 3; i++) {
       let p = random();
       let asteroid = new Asteroid(
@@ -111,8 +108,9 @@ class Game {
   }
 
   /**
-   * Creates a new instance of the player character and adds it to the actors array
-   * also keeps a direct reference to the player character
+   * Creates a new instance of the player character and
+   * adds it to the actors array.
+   * Also keeps a direct reference to the player character
    * @returns {void}
    * @private
    */
@@ -242,11 +240,6 @@ class Game {
    * @private
    */
   UpdatePysics() {
-    //this.mouseteroid.position = createVector(
-    //  mouseX - (width / 2 - this.resolution.x / 2),
-    //  mouseY - (height / 2 - this.resolution.y / 2),
-    //);
-    //this.mouseteroid.isDead = false;
     if (
       !this.actors.some((actor) => {
         return actor instanceof Asteroid || actor instanceof Saucer;

@@ -33,9 +33,6 @@ class Saucer extends Actor {
      * @protected
      */
     this.moveDir = createVector(random() > 0.5 ? 1 : -1, 0).normalize();
-    if (this.moveDir.x < 0) {
-      //this.position.add(createVector(gameInstance.resolution.x, 0));
-    }
     /**
      * The amount the saucer's aim can be randomly rotated in either direciton
      * @type {number}
@@ -85,10 +82,8 @@ class Saucer extends Actor {
       this.angularVelocity = 0;
     }
 
-    //update the actor's position with it's velocity
     this.position = p5.Vector.add(this.position, this.velocity);
 
-    //kill the actor if it has been hit
     this.isDead = this.hit;
 
     //wrap the actor's position at the edges of the game

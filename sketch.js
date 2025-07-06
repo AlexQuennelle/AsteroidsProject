@@ -1,33 +1,16 @@
 /**@type {Game} */
 let gameInstance;
+// Set to true to display debug info for saucer navigation
+let debug = false;
 
 function setup() {
   angleMode(DEGREES);
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(800, 600).id("canvas");
   gameInstance = new Game();
 }
 
 function draw() {
   gameInstance.Update();
-  push();
-  noStroke();
-  fill(50);
-  rect(0, 0, (width - gameInstance.resolution.x) / 2, height);
-  rect(
-    width / 2 + gameInstance.resolution.x / 2,
-    0,
-    (width - gameInstance.resolution.x) / 2,
-    height,
-  );
-
-  rect(0, 0, width, (height - gameInstance.resolution.y) / 2);
-  rect(
-    0,
-    height / 2 + gameInstance.resolution.y / 2,
-    width,
-    (height - gameInstance.resolution.y) / 2,
-  );
-  pop();
 }
 
 function windowResized() {

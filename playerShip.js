@@ -16,7 +16,6 @@ class PlayerShip extends Actor {
       new Collider([verts[0], verts[1], verts[2]]),
       new Collider([verts[0], verts[2], verts[3]]),
     ];
-    //call base constructor
     super(pos, verts, cols, 0);
     /**
      * The player's current score.
@@ -82,7 +81,8 @@ class PlayerShip extends Actor {
   }
 
   /**
-   * Handles logic related to respawning and decrementing the lives on the player
+   * Handles logic related to respawning and decrementing the
+   * lives on the player
    * @returns {void}
    * @public
    */

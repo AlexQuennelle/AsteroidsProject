@@ -84,7 +84,6 @@ class Actor {
    * @public
    */
   Update() {
-    //set velocities to 0 if they're below a certain threshold
     if (this.velocity.mag() <= 0.001) {
       this.velocity = createVector(0, 0);
     }
@@ -92,11 +91,9 @@ class Actor {
       this.angularVelocity = 0;
     }
 
-    //update the actor's position with it's velocity
     this.position = p5.Vector.add(this.position, this.velocity);
     this.rotation += this.angularVelocity;
 
-    //kill the actor if it has been hit
     this.isDead = this.hit;
 
     //wrap the actor's position at the edges of the game
@@ -260,26 +257,6 @@ class Actor {
       return colliders;
     };
     colliders = loop(this);
-    //this.colliders.forEach((col) => {
-    //  //special case for circle colliders
-    //  if (col instanceof CircleCollider) {
-    //    colliders.push(
-    //      new CircleCollider(
-    //        p5.Vector.rotate(col.position, this.rotation).add(this.position),
-    //        col.radius,
-    //      ),
-    //    );
-    //  } else {
-    //    /**@type {vec2[]} */
-    //    let newVerts = [];
-    //    for (let i = 0; i < col.verts.length; i++) {
-    //      newVerts.push(
-    //        p5.Vector.rotate(col.verts[i], this.rotation).add(this.position),
-    //      );
-    //    }
-    //    colliders.push(new Collider(newVerts, col.normals));
-    //  }
-    //});
     if (this.position.y - this.collisionRadius <= 0) {
       colliders = colliders.concat(
         loop(this, createVector(0, gameInstance.resolution.y)),

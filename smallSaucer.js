@@ -67,7 +67,6 @@ class SmallSaucer extends Saucer {
       this.Shoot();
     }
     this.shootCooldown = this.shootCooldown > 0 ? this.shootCooldown - 1 : 0;
-    //set velocities to 0 if they're below a certain threshold
     this.velocity = p5.Vector.mult(this.velocity, 0.9);
     if (this.velocity.mag() <= 0.001) {
       this.velocity = createVector(0, 0);
@@ -148,11 +147,9 @@ class SmallSaucer extends Saucer {
       );
     }
 
-    //update the actor's position with it's velocity
     this.position = p5.Vector.add(this.position, this.velocity);
     this.rotation += this.angularVelocity;
 
-    //kill the actor if it has been hit
     this.isDead = this.hit;
 
     //wrap the actor's position at the edges of the game
@@ -188,15 +185,17 @@ class SmallSaucer extends Saucer {
         this.sensor.radius - (p5.Vector.mag(dir) - actor.collisionRadius),
       );
       avgDir = p5.Vector.add(avgDir, dir);
-      noStroke();
-      circle(actor.position.x, actor.position.y, actor.collisionRadius * 2);
-      stroke("red");
-      line(
-        this.position.x,
-        this.position.y,
-        this.position.x + dir.x,
-        this.position.y + dir.y,
-      );
+      if(debug) {
+        noStroke();
+        circle(actor.position.x, actor.position.y, actor.collisionRadius * 2);
+        stroke("red");
+        line(
+          this.position.x,
+          this.position.y,
+          this.position.x + dir.x,
+          this.position.y + dir.y,
+        );
+      }
     }, this);
     if (this.actorsSensed.length > 1) {
       avgDir = p5.Vector.div(avgDir, this.actorsSensed.length - 1);
@@ -207,21 +206,25 @@ class SmallSaucer extends Saucer {
     )
       .add(p5.Vector.normalize(avgDir).mult(avgDir.mag() / this.sensor.radius))
       .mult(this.sensor.radius);
-    stroke(0, 0, 255, 128);
-    line(
-      this.position.x,
-      this.position.y,
-      this.position.x + avgDir.x,
-      this.position.y + avgDir.y,
-    );
+    if(debug) {
+      stroke(0, 0, 255, 128);
+      line(
+        this.position.x,
+        this.position.y,
+        this.position.x + avgDir.x,
+        this.position.y + avgDir.y,
+      );
+    }
     pop();
     super.Draw();
-    push();
-    noFill();
-    stroke("green");
-    strokeWeight(2.5);
-    circle(this.position.x, this.position.y, this.sensor.radius * 2);
-    pop();
+    if (debug) {
+      push();
+      noFill();
+      stroke("green");
+      strokeWeight(2.5);
+      circle(this.position.x, this.position.y, this.sensor.radius * 2);
+      pop();
+    }
   }
 
   CalculateThrust() {
@@ -247,10 +250,8 @@ class SmallSaucer extends Saucer {
     thrustDir = p5.Vector.mult(
       this.targetDir,
       1 - bias / this.sensor.radius,
-      //1 - thrustDir.mag() / this.sensor.radius,
     ).add(
       p5.Vector.normalize(thrustDir).mult(bias / this.sensor.radius),
-      //p5.Vector.normalize(thrustDir).mult(thrustDir.mag() / this.sensor.radius),
     );
 
     let alignment = p5.Vector.dot(thrustDir, this.targetDir);
@@ -293,7 +294,6 @@ class SmallSaucer extends Saucer {
             actor,
             createVector(0, -gameInstance.resolution.y),
           )) &&
-        //this.sensor.CheckCollision(this.position, 0, actor) &&
         actor.collisionLayer !== this.collisionLayer
       ) {
         this.actorsSensed.push(actor);

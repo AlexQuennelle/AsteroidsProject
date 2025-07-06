@@ -105,7 +105,8 @@ class Collider {
   }
 
   /**
-   * Checks if 2 convex shapes defined by lists of vertices overlap along a given axis.
+   * Checks if 2 convex shapes defined by lists of vertices
+   * overlap along a given axis.
    * @param {vec2[]} verts List of vertices that make up the first shape
    * @param {vec2[]} otherVerts List of vertices that make up the second shape
    * @param {vec2} axis The axis along which to test overlapping
@@ -133,7 +134,8 @@ class Collider {
   }
 
   /**
-   * Gets the distance of the furthest point from the center in an array of colliders
+   * Gets the distance of the furthest point from the center in
+   * an array of colliders
    * Used in culling the number of full collision checks
    * @param {Collider[]} colliders List of colliders to check
    * @returns {number}
